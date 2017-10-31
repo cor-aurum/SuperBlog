@@ -15,7 +15,8 @@ func kekse(w http.ResponseWriter) {
 }
 
 func startseite(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "seite/index", 301)
+	t, _ := template.ParseFiles("index.html")
+	t.Execute(w, nil)
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
