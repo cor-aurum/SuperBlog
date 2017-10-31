@@ -26,14 +26,14 @@ article {
 	color: #ffff00;
 	position: relative;
 	font-size: 25px;
-	margin-left:50%;
+	margin-left:25%;
 	top: 125px;
 }
 
 menu {
 	background-color: #ff0000;
-	margin-left: 25%;
-	position: relative;
+	margin-left: 0%;
+	position: absolute;
 	top: 100px;
 	height: 25px;
 }
