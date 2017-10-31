@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+	"sort"
 )
 
 func kekse(w http.ResponseWriter) {
@@ -32,6 +33,7 @@ func startseite(w http.ResponseWriter, r *http.Request) {
 		s.Dateiname="seite/" + seite.Name()[:len(seite.Name())-5]
 		start.Seiten = append(start.Seiten, s)
 	}
+	sort.Slice(start.Seiten, func(i, j int) bool { return start.Seiten[i].Datum.After(start.Seiten[j].Datum) })
 	t, _ := template.ParseFiles("index.html")
 	t.Execute(w, start)
 }
@@ -54,7 +56,7 @@ type Seite struct {
 	Dateiname  string
 	Titel      string
 	Inhalt     string
-	Datum      string
+	Datum      time.Time
 	Autor      string
 	Kommentare []Kommentar
 }
