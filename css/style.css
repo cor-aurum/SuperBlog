@@ -1,3 +1,48 @@
 body{
-    background-color:#0000ff;
+    background-color:#ffff00;
+    color:#00ff00;
+}
+
+footer {
+	background-color: #ff00b1;
+	color: #ffff00;
+	position: absolute;
+	bottom: 0px;
+}
+header {
+	background-color: #ff00b1;
+	color: #ffff00;
+	position: absolute;
+	top: 0px;
+	font-size: 80px;
+	width: 100%;
+	left: 0px;
+	height: 100px;
+	top: 0px;
+}
+
+article {
+	background-color: #ff00b1;
+	color: #ffff00;
+	position: relative;
+	font-size: 25px;
+	margin-left:50%;
+	top: 125px;
+}
+
+menu {
+	background-color: #ff0000;
+	margin-left: 25%;
+	position: relative;
+	top: 100px;
+	height: 25px;
+}
+
+article, h1 {
+	font-size: 30px;
+}
+
+article, date {
+	font-style: italic;
+	font-size: 12px;
 }

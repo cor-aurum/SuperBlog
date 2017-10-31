@@ -5,12 +5,19 @@
         <link rel="stylesheet" href="../css/style.css">
     </head>
     <body>
-        Hallo Welt
-        <br>
-        Hier ist das Template
-        <br>
-        <a href="login">Zur Loginseite</a>
-        <br>
-        Automatisch eingesetzter Text: {{.Inhalt}}!
+        <header>SuperBlog</header>
+        <menu>
+        	<menuitem>Startseite</menuitem>
+        	<menuitem>Zufälliger Artikel</menuitem>
+        </menu>
+        <article>
+        	<h1>{{.Titel}}</h1>
+        	<p>
+        		Von <author>{{.Autor}}</author>
+        		am <time>{{.Datum}}</time>
+        	</p>
+        	{{.Inhalt}}!
+        </article>
+        <footer>Siehe: <a href="https://github.com/cor-aurum/SuperBlog">Sourcecode auf Github</a></footer>
     </body>
 </html>
