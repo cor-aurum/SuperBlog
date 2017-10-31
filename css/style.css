@@ -38,11 +38,11 @@ menu {
 	height: 25px;
 }
 
-article, h1 {
+article h1 {
 	font-size: 30px;
 }
 
-article, date {
+article nav {
 	font-style: italic;
 	font-size: 12px;
 }
