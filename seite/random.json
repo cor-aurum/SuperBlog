@@ -1,1 +1,6 @@
-{"Titel":"Randomseite","Inhalt":"Inhalt der Startseite","Datum":"31.10.2017","Autor":"Master of Programming","Kommentare":[{"Autor":"Weihnachtsmann","Datum":"31.10.2017","Inhalt":"HoHoHo"},{"Autor":"Felix","Datum":"31.10.2017","Inhalt":"Da steht aber noch nicht viel..."}]}
+{
+	"Titel": "Randomseite",
+	"Inhalt": "Inhalt der Startseite",
+	"Datum": "2017-10-31T21:51:37.753827766+01:00",
+	"Autor": "Master of Programming"
+}

@@ -46,7 +46,7 @@ type Startseite struct {
 
 type Kommentar struct {
 	Autor  string
-	Datum  string
+	Datum  time.Time
 	Inhalt string
 }
 
@@ -69,7 +69,7 @@ func enthaelt(s []Kommentar, e Kommentar) bool {
 }
 
 func erstelleKommentar(r *http.Request) {
-	k := Kommentar{Autor: r.URL.Query().Get("autor"), Inhalt: r.URL.Query().Get("inhalt"), Datum: time.Now().Format("02.01.2006")}
+	k := Kommentar{Autor: r.URL.Query().Get("autor"), Inhalt: r.URL.Query().Get("inhalt"), Datum: time.Now()}
 	if len(k.Autor) == 0 || len(k.Inhalt) == 0 {
 		return
 	}
