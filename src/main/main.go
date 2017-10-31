@@ -20,16 +20,17 @@ func startseite(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	start:=Startseite{}
+	start := Startseite{}
 	for _, seite := range seiten {
 		var s Seite
-		dat, err := ioutil.ReadFile("seite/"+seite.Name())
+		dat, err := ioutil.ReadFile("seite/" + seite.Name())
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 		err = json.Unmarshal(dat, &s)
-		start.Seiten=append(start.Seiten,s)
+		s.Dateiname="seite/" + seite.Name()[:len(seite.Name())-5]
+		start.Seiten = append(start.Seiten, s)
 	}
 	t, _ := template.ParseFiles("index.html")
 	t.Execute(w, start)
@@ -50,6 +51,7 @@ type Kommentar struct {
 }
 
 type Seite struct {
+	Dateiname  string
 	Titel      string
 	Inhalt     string
 	Datum      string

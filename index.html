@@ -8,7 +8,7 @@
 	<header>SuperBlog</header>
 	{{with .Seiten}} {{range .}}
 	<article>
-		<h1>{{.Titel}}</h1>
+		<h1><a href="{{.Dateiname}}">{{.Titel}}</a></h1>
 		<nav>
 			Von
 			<author>{{.Autor}}</author>
