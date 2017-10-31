@@ -2,11 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"io"
-	"net/http"
 	"io/ioutil"
-	"fmt"
+	"net/http"
+	"time"
 )
 
 func kekse(w http.ResponseWriter) {
@@ -23,19 +24,60 @@ func login(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "TODO Formular für Login und hinterstehende Logik")
 }
 
-type Seite struct {
-	Titel  string
-	Inhalt string
-	Datum  string
+type Kommentar struct {
 	Autor  string
+	Datum  string
+	Inhalt string
+}
+
+type Seite struct {
+	Titel      string
+	Inhalt     string
+	Datum      string
+	Autor      string
+	Kommentare []Kommentar
+}
+
+func enthaelt(s []Kommentar, e Kommentar) bool {
+    for _, a := range s {
+        if a == e {
+            return true
+        }
+    }
+    return false
+}
+
+func erstelleKommentar(r *http.Request) {
+	k := Kommentar{Autor:r.URL.Query().Get("autor"),Inhalt:r.URL.Query().Get("inhalt"),Datum:time.Now().Format("02.01.2006")}
+	if len(k.Autor) == 0 ||  len(k.Inhalt) == 0 { 
+		return
+	}
+	var s Seite
+	dat, err := ioutil.ReadFile(r.URL.Path[1:] + ".json")
+	if err != nil {
+		fmt.Println("Erstellen des Kommentars fehlgeschlagen", err)
+		return
+	}
+	err = json.Unmarshal(dat, &s)
+	if enthaelt(s.Kommentare,k) {
+		return
+	}
+	s.Kommentare=append([]Kommentar{k},s.Kommentare...)
+	if err != nil {
+		fmt.Println(err)
+	}
+	b, _ := json.Marshal(s)
+	ioutil.WriteFile(r.URL.Path[1:]+".json", b, 0644)
 }
 
 func seite(w http.ResponseWriter, r *http.Request) {
+	erstelleKommentar(r)
 	t, _ := template.ParseFiles("template.html")
 	var s Seite
-	dat, err := ioutil.ReadFile(r.URL.Path[1:]+".json")
+	dat, err := ioutil.ReadFile(r.URL.Path[1:] + ".json")
 	if err != nil {
-		http.Redirect(w, r, "index", 302)
+		//http.Redirect(w, r, "index", 302)
+		io.WriteString(w, "404")
 		return
 	}
 	err = json.Unmarshal(dat, &s)

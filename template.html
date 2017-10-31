@@ -1,23 +1,41 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>{{.Titel}} | SuperBlog</title>
-        <link rel="stylesheet" href="../css/style.css">
-    </head>
-    <body>
-        <header>SuperBlog</header>
-        <menu>
-        	<menuitem>Startseite</menuitem>
-        	<menuitem>Zufälliger Artikel</menuitem>
-        </menu>
-        <article>
-        	<h1>{{.Titel}}</h1>
-        	<nav>
-        		Von <author>{{.Autor}}</author>
-        		am <time>{{.Datum}}</time>
-        	</nav>
-        	{{.Inhalt}}
-        </article>
-        <footer>Siehe: <a href="https://github.com/cor-aurum/SuperBlog">Sourcecode auf Github</a></footer>
-    </body>
+<head>
+<title>{{.Titel}} | SuperBlog</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+	<header>SuperBlog</header>
+	<article>
+		<h1>{{.Titel}}</h1>
+		<nav>
+			Von
+			<author>{{.Autor}}</author>
+			am
+			<time>{{.Datum}}</time>
+		</nav>
+		{{.Inhalt}}
+		<div id="kommentieren">
+			<form action="">
+				<input type="text" name="autor" placeholder="Nickname" /><br>
+				<textarea name="inhalt" placeholder="Kommentieren"></textarea><br>
+				<input type="submit" value="Absenden" />
+			</form>
+		</div>
+		{{with .Kommentare}} {{range .}}
+		<div id="kommentar">
+			<nav>
+				<author>{{.Autor}}</author>
+				schrieb am
+				<time>{{.Datum}}</time>:
+			</nav>
+			{{.Inhalt}}
+		</div>
+		{{end}} {{end}}
+	</article>
+	<footer>
+		Siehe: <a href="https://github.com/cor-aurum/SuperBlog">Sourcecode
+			auf Github</a>
+	</footer>
+</body>
 </html>
