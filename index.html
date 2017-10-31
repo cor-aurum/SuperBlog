@@ -1,13 +1,26 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>SuperBlog</title>
-        <link rel="stylesheet" href="css/style.css">
-    </head>
-    <body>
-        Hallo Welt
-        <br>
-        <a href="login">Zur Loginseite</a>
-        Hello, {{.}}!
-    </body>
+<head>
+<title>Startseite | SuperBlog</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+	<header>SuperBlog</header>
+	{{with .Seiten}} {{range .}}
+	<article>
+		<h1>{{.Titel}}</h1>
+		<nav>
+			Von
+			<author>{{.Autor}}</author>
+			am
+			<time>{{.Datum}}</time>
+		</nav>
+		{{.Inhalt}}
+	</article>
+	{{end}} {{end}}
+	<footer>
+		Siehe: <a href="https://github.com/cor-aurum/SuperBlog">Sourcecode
+			auf Github</a>
+	</footer>
+</body>
 </html>

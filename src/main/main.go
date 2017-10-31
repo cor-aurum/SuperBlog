@@ -16,12 +16,31 @@ func kekse(w http.ResponseWriter) {
 }
 
 func startseite(w http.ResponseWriter, r *http.Request) {
+	seiten, err := ioutil.ReadDir("seite")
+	if err != nil {
+		fmt.Println(err)
+	}
+	start:=Startseite{}
+	for _, seite := range seiten {
+		var s Seite
+		dat, err := ioutil.ReadFile("seite/"+seite.Name())
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		err = json.Unmarshal(dat, &s)
+		start.Seiten=append(start.Seiten,s)
+	}
 	t, _ := template.ParseFiles("index.html")
-	t.Execute(w, nil)
+	t.Execute(w, start)
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "TODO Formular für Login und hinterstehende Logik")
+}
+
+type Startseite struct {
+	Seiten []Seite
 }
 
 type Kommentar struct {
@@ -39,17 +58,17 @@ type Seite struct {
 }
 
 func enthaelt(s []Kommentar, e Kommentar) bool {
-    for _, a := range s {
-        if a == e {
-            return true
-        }
-    }
-    return false
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
 
 func erstelleKommentar(r *http.Request) {
-	k := Kommentar{Autor:r.URL.Query().Get("autor"),Inhalt:r.URL.Query().Get("inhalt"),Datum:time.Now().Format("02.01.2006")}
-	if len(k.Autor) == 0 ||  len(k.Inhalt) == 0 { 
+	k := Kommentar{Autor: r.URL.Query().Get("autor"), Inhalt: r.URL.Query().Get("inhalt"), Datum: time.Now().Format("02.01.2006")}
+	if len(k.Autor) == 0 || len(k.Inhalt) == 0 {
 		return
 	}
 	var s Seite
@@ -59,10 +78,10 @@ func erstelleKommentar(r *http.Request) {
 		return
 	}
 	err = json.Unmarshal(dat, &s)
-	if enthaelt(s.Kommentare,k) {
+	if enthaelt(s.Kommentare, k) {
 		return
 	}
-	s.Kommentare=append([]Kommentar{k},s.Kommentare...)
+	s.Kommentare = append([]Kommentar{k}, s.Kommentare...)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -76,8 +95,8 @@ func seite(w http.ResponseWriter, r *http.Request) {
 	var s Seite
 	dat, err := ioutil.ReadFile(r.URL.Path[1:] + ".json")
 	if err != nil {
-		//http.Redirect(w, r, "index", 302)
-		io.WriteString(w, "404")
+		http.Redirect(w, r, "/", 302)
+		//io.WriteString(w, "404")
 		return
 	}
 	err = json.Unmarshal(dat, &s)
