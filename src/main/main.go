@@ -1,9 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"html/template"
 	"io"
 	"net/http"
+	"io/ioutil"
+	"fmt"
 )
 
 func kekse(w http.ResponseWriter) {
@@ -12,7 +15,7 @@ func kekse(w http.ResponseWriter) {
 }
 
 func startseite(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "seite/index.html", 300)
+	http.Redirect(w, r, "seite/index", 301)
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
@@ -22,13 +25,22 @@ func login(w http.ResponseWriter, r *http.Request) {
 type Seite struct {
 	Titel  string
 	Inhalt string
-	Datum string
-	Autor string
+	Datum  string
+	Autor  string
 }
 
 func seite(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("template.html")
-	s := Seite{Titel: "Testseite", Inhalt: "Automatisch eingesetzter <br>Inhalt", Datum: "31.10.2017", Autor: "Max Mustermann"}
+	var s Seite
+	dat, err := ioutil.ReadFile(r.URL.Path[1:]+".json")
+	if err != nil {
+		http.Redirect(w, r, "index", 302)
+		return
+	}
+	err = json.Unmarshal(dat, &s)
+	if err != nil {
+		fmt.Println(err)
+	}
 	t.Execute(w, s)
 }
 
