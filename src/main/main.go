@@ -1,5 +1,8 @@
 package main
 
+/*
+IMPORTE
+*/
 import (
 	"crypto/rand"
 	"encoding/json"
@@ -13,6 +16,10 @@ import (
 	"strings"
 	"time"
 )
+
+/*
+Typen
+*/
 
 type Startseite struct {
 	Menu   []Menuitem
@@ -51,7 +58,16 @@ type Sitzung struct {
 	Name  string
 }
 
+/*
+Globale Variablen
+*/
+
 var sitzungen []Sitzung
+var timeout int
+
+/*
+Funktionen
+*/
 
 func gebeSitzung(r *http.Request) (bool, string) {
 	keks, err := r.Cookie("id")
@@ -88,7 +104,7 @@ func kekse(w http.ResponseWriter) http.Cookie {
 	for i := range b {
 		s[i] = strconv.Itoa(int(b[i]))
 	}
-	ablauf := time.Now().Add(time.Minute * 15)
+	ablauf := time.Now().Add(time.Minute * time.Duration(timeout))
 	c := http.Cookie{Name: "id", Value: strings.Join(s, ""), Expires: ablauf}
 	http.SetCookie(w, &c)
 	return c
@@ -225,12 +241,13 @@ func profil(w http.ResponseWriter, r *http.Request) {
 	}
 	p := Profil{Name: name}
 	t, _ := template.ParseFiles("profil.html")
-	p.Menu=machMenu(p.Menu, r)
+	p.Menu = machMenu(p.Menu, r)
 	t.Execute(w, p)
 }
 
 func main() {
 	port := flag.Int("port", 8000, "Port für den Webserver")
+	flag.IntVar(&timeout, "timeout", 15, "Timeout von Sitzungen in Minuten")
 	flag.Parse()
 	http.Handle("/css/", http.StripPrefix("/css", http.FileServer(http.Dir("css"))))
 	http.Handle("/images/", http.StripPrefix("/images", http.FileServer(http.Dir("images"))))
