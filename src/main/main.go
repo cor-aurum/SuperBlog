@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"time"
 	"sort"
+	"flag"
+	"strconv"
 )
 
 func kekse(w http.ResponseWriter) {
@@ -61,8 +63,12 @@ type Seite struct {
 	Kommentare []Kommentar
 }
 
-func enthaelt(s []Kommentar, e Kommentar) bool {
-	for _, a := range s {
+func getDatum(d time.Time) string {
+	return d.Format("02.01.2006")
+}
+
+func enthaelt(k []Kommentar, e Kommentar) bool {
+	for _, a := range k {
 		if a == e {
 			return true
 		}
@@ -100,7 +106,6 @@ func seite(w http.ResponseWriter, r *http.Request) {
 	dat, err := ioutil.ReadFile(r.URL.Path[1:] + ".json")
 	if err != nil {
 		http.Redirect(w, r, "/", 302)
-		//io.WriteString(w, "404")
 		return
 	}
 	err = json.Unmarshal(dat, &s)
@@ -111,10 +116,12 @@ func seite(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	port := flag.Int("port", 8000, "Port für den Webserver")
+	flag.Parse()
 	http.Handle("/css/", http.StripPrefix("/css", http.FileServer(http.Dir("css"))))
 	http.Handle("/images/", http.StripPrefix("/images", http.FileServer(http.Dir("images"))))
 	http.HandleFunc("/", startseite)
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/seite/", seite)
-	http.ListenAndServe(":8000", nil)
+	http.ListenAndServe(":"+strconv.Itoa(*port), nil)
 }

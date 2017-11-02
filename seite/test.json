@@ -1,6 +1,1 @@
-{
-	"Titel": "Testseite",
-	"Inhalt": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
-	"Datum": "2017-10-31T21:51:53.15612987+01:00",
-	"Autor": "Nils Holgerson"
-}
+{"Dateiname":"","Titel":"Neue Testseite","Inhalt":"Eine Testseite die neuer ist als bisherige Testseiten","Datum":"2017-10-31T22:50:32.283095133+01:00","Autor":"Nils Holgerson","Kommentare":[{"Autor":"Neue Testseite","Datum":"2017-11-01T14:01:42.266599513+01:00","Inhalt":"Das ist ja eine hübsche Testseite"},{"Autor":"Zwergenstübchen","Datum":"2017-11-01T11:49:35.991574235+01:00","Inhalt":"Himmlische Backstube"},{"Autor":"Toll","Datum":"2017-10-31T22:53:16.40875596+01:00","Inhalt":"Kaum Inhalt hier"}]}

@@ -5,21 +5,32 @@
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-	<header><a href="/">SuperBlog</a></header>
+	<header>
+		<a href="/">SuperBlog</a>
+	</header>
 	<article>
 		<h1>{{.Titel}}</h1>
 		<nav>
 			Von
 			<author>{{.Autor}}</author>
 			am
-			<time>{{.Datum}}</time>
+			<time>
+				<script>
+			datum = {{.Datum}};
+			datum = datum.split('T');
+			datum[0]=datum[0].split('-');
+			uhrzeit=datum[1].split('.');
+			document.write(datum[0][2]+'.'+datum[0][1]+'.'+datum[0][0]+' um '+uhrzeit[0]);
+				</script>
+				<noscript>{{.Datum}}</noscript>
+			</time>
 		</nav>
 		{{.Inhalt}}
 		<div id="kommentieren">
 			<form action="">
 				<input type="text" name="autor" placeholder="Nickname" /><br>
-				<textarea name="inhalt" placeholder="Kommentieren"></textarea><br>
-				<input type="submit" value="Absenden" />
+				<textarea name="inhalt" placeholder="Kommentieren"></textarea>
+				<br> <input type="submit" value="Absenden" />
 			</form>
 		</div>
 		{{with .Kommentare}} {{range .}}
@@ -27,7 +38,17 @@
 			<nav>
 				<author>{{.Autor}}</author>
 				schrieb am
-				<time>{{.Datum}}</time>:
+				<time>
+					<script>
+			datum = {{.Datum}};
+			datum = datum.split('T');
+			datum[0]=datum[0].split('-');
+			uhrzeit=datum[1].split('.');
+			document.write(datum[0][2]+'.'+datum[0][1]+'.'+datum[0][0]+' um '+uhrzeit[0]);
+				</script>
+				<noscript>{{.Datum}}</noscript>
+				</time>
+				:
 			</nav>
 			{{.Inhalt}}
 		</div>

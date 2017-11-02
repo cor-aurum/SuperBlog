@@ -8,12 +8,23 @@
 	<header>SuperBlog</header>
 	{{with .Seiten}} {{range .}}
 	<article>
-		<h1><a href="{{.Dateiname}}">{{.Titel}}</a></h1>
+		<h1>
+			<a href="{{.Dateiname}}">{{.Titel}}</a>
+		</h1>
 		<nav>
 			Von
 			<author>{{.Autor}}</author>
 			am
-			<time>{{.Datum}}</time>
+			<time>
+				<script>
+			datum = {{.Datum}};
+			datum = datum.split('T');
+			datum[0]=datum[0].split('-');
+			uhrzeit=datum[1].split('.');
+			document.write(datum[0][2]+'.'+datum[0][1]+'.'+datum[0][0]+' um '+uhrzeit[0]);
+				</script>
+				<noscript>{{.Datum}}</noscript>
+			</time>
 		</nav>
 		{{.Inhalt}}
 	</article>
