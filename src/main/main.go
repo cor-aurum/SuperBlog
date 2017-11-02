@@ -4,45 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
-	"io"
+	//"io"
+	"flag"
 	"io/ioutil"
 	"net/http"
-	"time"
 	"sort"
-	"flag"
 	"strconv"
+	"time"
 )
-
-func kekse(w http.ResponseWriter) {
-	c := http.Cookie{Name: "name", Value: "value"}
-	http.SetCookie(w, &c)
-}
-
-func startseite(w http.ResponseWriter, r *http.Request) {
-	seiten, err := ioutil.ReadDir("seite")
-	if err != nil {
-		fmt.Println(err)
-	}
-	start := Startseite{}
-	for _, seite := range seiten {
-		var s Seite
-		dat, err := ioutil.ReadFile("seite/" + seite.Name())
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		err = json.Unmarshal(dat, &s)
-		s.Dateiname="seite/" + seite.Name()[:len(seite.Name())-5]
-		start.Seiten = append(start.Seiten, s)
-	}
-	sort.Slice(start.Seiten, func(i, j int) bool { return start.Seiten[i].Datum.After(start.Seiten[j].Datum) })
-	t, _ := template.ParseFiles("index.html")
-	t.Execute(w, start)
-}
-
-func login(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "TODO Formular für Login und hinterstehende Logik")
-}
 
 type Startseite struct {
 	Seiten []Seite
@@ -63,8 +32,65 @@ type Seite struct {
 	Kommentare []Kommentar
 }
 
-func getDatum(d time.Time) string {
-	return d.Format("02.01.2006")
+type Sitzung struct {
+	Keks http.Cookie
+	Datum time.Time
+	Name string
+}
+
+var sitzungen []Sitzung
+
+func kekse(w http.ResponseWriter) http.Cookie {
+	c := http.Cookie{Name: "name", Value: "value"}
+	http.SetCookie(w, &c)
+	return c
+}
+
+func startseite(w http.ResponseWriter, r *http.Request) {
+	seiten, err := ioutil.ReadDir("seite")
+	if err != nil {
+		fmt.Println(err)
+	}
+	start := Startseite{}
+	for _, seite := range seiten {
+		var s Seite
+		dat, err := ioutil.ReadFile("seite/" + seite.Name())
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		err = json.Unmarshal(dat, &s)
+		s.Dateiname = "seite/" + seite.Name()[:len(seite.Name())-5]
+		start.Seiten = append(start.Seiten, s)
+	}
+	sort.Slice(start.Seiten, func(i, j int) bool { return start.Seiten[i].Datum.After(start.Seiten[j].Datum) })
+	t, _ := template.ParseFiles("index.html")
+	t.Execute(w, start)
+}
+
+func pruefeLogin(name string, pass string) bool {
+	return name!=""&&pass!=""
+}
+
+func machLogin(w http.ResponseWriter, r *http.Request) bool{
+	name := r.FormValue("name")
+	pass := r.FormValue("pass")
+	if !pruefeLogin(name, pass) {
+		return false
+	}
+	s := Sitzung{Name: name, Keks: kekse(w), Datum: time.Now()}
+	sitzungen=append(sitzungen, s)
+	fmt.Println("Login von", name)
+	return true
+}
+
+func login(w http.ResponseWriter, r *http.Request) {
+	if !machLogin(w,r) {
+	t, _ := template.ParseFiles("login.html")
+	t.Execute(w, nil)
+	} else {
+		http.Redirect(w, r, "/", 302)
+	}
 }
 
 func enthaelt(k []Kommentar, e Kommentar) bool {

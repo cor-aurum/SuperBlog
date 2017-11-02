@@ -29,7 +29,7 @@ article {
 	color: #ffff00;
 	position: relative;
 	font-size: 25px;
-	left : 50%;
+	left: 50%;
 	top: 150px;
 	padding: 20px;
 	left: 50%;
@@ -50,6 +50,37 @@ article nav {
 a {
 	color: #ffff00;
 	text-decoration: none;
+}
+
+menu {
+	background-color: #0000ff;
+	color: #ffff00;
+	top: 150px;
+	position: absolute;
+	margin: 10px;
+	padding: 0px;
+	list-style-type: none;
+}
+
+menu ul {
+	padding: 0px;
+	margin: 5px;
+}
+
+menu li a:link {
+	display: block;
+	border: 1px solid #ffff00;
+	background-color: #0000ff;
+	padding: 10px;
+	color: #ffff00;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+menu li a:hover {
+	display: block;
+	background-color: #ff00b1;
+	color: #ffff00;
 }
 
 #kommentieren, #kommentar {

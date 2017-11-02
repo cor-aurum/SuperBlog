@@ -8,6 +8,16 @@
 	<header>
 		<a href="/">SuperBlog</a>
 	</header>
+	<nav>
+		<menu>
+			<menuitem>
+			<ul>
+				<li><a href="/">Startseite</a></li>
+				<li><a href="/login">Login</a></li>
+			</ul>
+			</menuitem>
+		</menu>
+	</nav>
 	<article>
 		<h1>{{.Titel}}</h1>
 		<nav>
@@ -46,7 +56,7 @@
 			uhrzeit=datum[1].split('.');
 			document.write(datum[0][2]+'.'+datum[0][1]+'.'+datum[0][0]+' um '+uhrzeit[0]);
 				</script>
-				<noscript>{{.Datum}}</noscript>
+					<noscript>{{.Datum}}</noscript>
 				</time>
 				:
 			</nav>

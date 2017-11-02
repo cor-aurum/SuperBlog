@@ -16,29 +16,20 @@
 			</menuitem>
 		</menu>
 	</nav>
-	{{with .Seiten}} {{range .}}
 	<article>
-		<h1>
-			<a href="{{.Dateiname}}">{{.Titel}}</a>
-		</h1>
-		<nav>
-			Von
-			<author>{{.Autor}}</author>
-			am
-			<time>
-				<script>
-			datum = {{.Datum}};
-			datum = datum.split('T');
-			datum[0]=datum[0].split('-');
-			uhrzeit=datum[1].split('.');
-			document.write(datum[0][2]+'.'+datum[0][1]+'.'+datum[0][0]+' um '+uhrzeit[0]);
-				</script>
-				<noscript>{{.Datum}}</noscript>
-			</time>
-		</nav>
-		{{.Inhalt}}
+		<h1>Login</h1>
+			<form method="post" action="/login">
+				<p>
+					<input type="text" name="name" placeholder="Nutzername">
+				</p>
+				<p>
+					<input type="password" name="pass" placeholder="Password">
+				</p>
+				<p class="submit">
+					<input type="submit" name="anmelden" value="Anmelden">
+				</p>
+			</form>
 	</article>
-	{{end}} {{end}}
 	<footer>
 		Siehe: <a href="https://github.com/cor-aurum/SuperBlog">Sourcecode
 			auf Github</a>
