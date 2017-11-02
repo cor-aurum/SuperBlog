@@ -1,21 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Startseite | SuperBlog</title>
+<title>Login | SuperBlog</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-	<header>SuperBlog</header>
-	<nav>
-		<menu>
-			<menuitem>
-			<ul>
-				<li><a href="/">Startseite</a></li>
-				<li><a href="/login">Login</a></li>
-			</ul>
-			</menuitem>
-		</menu>
-	</nav>
+	<header><a href="/">SuperBlog</a></header>
 	<article>
 		<h1>Login</h1>
 			<form method="post" action="/login">
@@ -29,6 +19,9 @@
 					<input type="submit" name="anmelden" value="Anmelden">
 				</p>
 			</form>
+			<p>
+			{{.}}
+			</p>
 	</article>
 	<footer>
 		Siehe: <a href="https://github.com/cor-aurum/SuperBlog">Sourcecode

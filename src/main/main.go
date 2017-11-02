@@ -1,20 +1,27 @@
 package main
 
 import (
+	"crypto/rand"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"html/template"
-	//"io"
-	"flag"
 	"io/ioutil"
 	"net/http"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 )
 
 type Startseite struct {
+	Menu   []Menuitem
 	Seiten []Seite
+}
+
+type Menuitem struct {
+	Ziel string
+	Text string
 }
 
 type Kommentar struct {
@@ -24,6 +31,7 @@ type Kommentar struct {
 }
 
 type Seite struct {
+	Menu       []Menuitem
 	Dateiname  string
 	Titel      string
 	Inhalt     string
@@ -32,16 +40,56 @@ type Seite struct {
 	Kommentare []Kommentar
 }
 
-type Sitzung struct {
-	Keks http.Cookie
-	Datum time.Time
+type Profil struct {
+	Menu []Menuitem
 	Name string
+}
+
+type Sitzung struct {
+	Keks  http.Cookie
+	Datum time.Time
+	Name  string
 }
 
 var sitzungen []Sitzung
 
+func gebeSitzung(r *http.Request) (bool, string) {
+	keks, err := r.Cookie("id")
+	if err != nil {
+		return false, ""
+	}
+	for _, s := range sitzungen {
+		if s.Keks.Value == keks.Value {
+			return true, s.Name
+		}
+	}
+	return false, ""
+}
+
+func loescheSitzung(r *http.Request) {
+	keks, err := r.Cookie("id")
+	if err != nil {
+		return
+	}
+	for i, s := range sitzungen {
+		if s.Keks.Value == keks.Value {
+			sitzungen = append(sitzungen[:i], sitzungen[i+1:]...)
+		}
+	}
+}
+
 func kekse(w http.ResponseWriter) http.Cookie {
-	c := http.Cookie{Name: "name", Value: "value"}
+	b := make([]byte, 32)
+	_, err := rand.Read(b)
+	if err != nil {
+		fmt.Println(err)
+	}
+	s := make([]string, len(b))
+	for i := range b {
+		s[i] = strconv.Itoa(int(b[i]))
+	}
+	ablauf := time.Now().Add(time.Minute * 15)
+	c := http.Cookie{Name: "id", Value: strings.Join(s, ""), Expires: ablauf}
 	http.SetCookie(w, &c)
 	return c
 }
@@ -65,32 +113,47 @@ func startseite(w http.ResponseWriter, r *http.Request) {
 	}
 	sort.Slice(start.Seiten, func(i, j int) bool { return start.Seiten[i].Datum.After(start.Seiten[j].Datum) })
 	t, _ := template.ParseFiles("index.html")
+	start.Menu = machMenu(start.Menu, r)
 	t.Execute(w, start)
 }
 
 func pruefeLogin(name string, pass string) bool {
-	return name!=""&&pass!=""
+	return (name == "test" || name == "admin") && pass != ""
 }
 
-func machLogin(w http.ResponseWriter, r *http.Request) bool{
+func machLogin(w http.ResponseWriter, r *http.Request) (bool, bool) {
 	name := r.FormValue("name")
 	pass := r.FormValue("pass")
-	if !pruefeLogin(name, pass) {
-		return false
+	if name == "" && pass == "" {
+		return false, false
+	} else {
+		if !pruefeLogin(name, pass) {
+			return true, false
+		}
 	}
 	s := Sitzung{Name: name, Keks: kekse(w), Datum: time.Now()}
-	sitzungen=append(sitzungen, s)
-	fmt.Println("Login von", name)
-	return true
+	sitzungen = append(sitzungen, s)
+	return true, true
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
-	if !machLogin(w,r) {
-	t, _ := template.ParseFiles("login.html")
-	t.Execute(w, nil)
+	login, erfolg := machLogin(w, r)
+	if !login {
+		t, _ := template.ParseFiles("login.html")
+		t.Execute(w, nil)
 	} else {
-		http.Redirect(w, r, "/", 302)
+		if erfolg {
+			http.Redirect(w, r, "/", 302)
+		} else {
+			t, _ := template.ParseFiles("login.html")
+			t.Execute(w, "Login fehlgeschlagen")
+		}
 	}
+}
+
+func logout(w http.ResponseWriter, r *http.Request) {
+	loescheSitzung(r)
+	http.Redirect(w, r, "/", 302)
 }
 
 func enthaelt(k []Kommentar, e Kommentar) bool {
@@ -138,7 +201,32 @@ func seite(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
+	s.Menu = machMenu(s.Menu, r)
 	t.Execute(w, s)
+}
+
+func machMenu(m []Menuitem, r *http.Request) []Menuitem {
+	m = append(m, Menuitem{Ziel: "/", Text: "Startseite"})
+	login, name := gebeSitzung(r)
+	if login {
+		m = append(m, Menuitem{Ziel: "/profil", Text: name})
+		m = append(m, Menuitem{Ziel: "/logout", Text: "Logout"})
+	} else {
+		m = append(m, Menuitem{Ziel: "/login", Text: "Login"})
+	}
+	return m
+}
+
+func profil(w http.ResponseWriter, r *http.Request) {
+	login, name := gebeSitzung(r)
+	if !login {
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+	p := Profil{Name: name}
+	t, _ := template.ParseFiles("profil.html")
+	p.Menu=machMenu(p.Menu, r)
+	t.Execute(w, p)
 }
 
 func main() {
@@ -148,6 +236,8 @@ func main() {
 	http.Handle("/images/", http.StripPrefix("/images", http.FileServer(http.Dir("images"))))
 	http.HandleFunc("/", startseite)
 	http.HandleFunc("/login", login)
+	http.HandleFunc("/logout", logout)
+	http.HandleFunc("/profil", profil)
 	http.HandleFunc("/seite/", seite)
 	http.ListenAndServe(":"+strconv.Itoa(*port), nil)
 }

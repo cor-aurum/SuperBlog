@@ -10,8 +10,8 @@
 		<menu>
 			<menuitem>
 			<ul>
-				<li><a href="/">Startseite</a></li>
-				<li><a href="/login">Login</a></li>
+				{{with .Menu}} {{range .}}
+				<li><a href="{{.Ziel}}">{{.Text}}</a></li> {{end}} {{end}}
 			</ul>
 			</menuitem>
 		</menu>

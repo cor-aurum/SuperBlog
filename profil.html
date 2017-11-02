@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{{.Name}} | SuperBlog</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+	<header><a href="/">SuperBlog</a></header>
+	<nav>
+		<menu>
+			<menuitem>
+			<ul>
+				{{with .Menu}} {{range .}}
+				<li><a href="{{.Ziel}}">{{.Text}}</a></li> {{end}} {{end}}
+			</ul>
+			</menuitem>
+		</menu>
+	</nav>
+	<article>
+		<h1>
+			Profil von {{.Name}}
+		</h1>
+		Hier muss noch Zeugs hin...
+	</article>
+	<footer>
+		Siehe: <a href="https://github.com/cor-aurum/SuperBlog">Sourcecode
+			auf Github</a>
+	</footer>
+</body>
+</html>
