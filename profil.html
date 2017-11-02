@@ -5,7 +5,9 @@
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-	<header><a href="/">SuperBlog</a></header>
+	<header>
+		<a href="/">SuperBlog</a>
+	</header>
 	<nav>
 		<menu>
 			<menuitem>
@@ -17,10 +19,24 @@
 		</menu>
 	</nav>
 	<article>
-		<h1>
-			Profil von {{.Name}}
-		</h1>
-		Hier muss noch Zeugs hin...
+		<h1>Passwort ändern für {{.Name}}</h1>
+		<form method="post" action="/passwort">
+			<p>
+				<input type="password" name="neu_pass" placeholder="Neues Passwort">
+			</p>
+			<p>
+				<input type="password" name="pass_wdh" placeholder="Passwort wiederholen">
+			</p>
+			<p>
+				<input type="password" name="alt_pass" placeholder="Altes Passwort">
+			</p>
+			<p class="submit">
+				<input type="submit" name="anmelden" value="Passwort ändern">
+			</p>
+			<p>
+			{{.Meldung}}
+			</p>
+		</form>
 	</article>
 	<footer>
 		Siehe: <a href="https://github.com/cor-aurum/SuperBlog">Sourcecode
