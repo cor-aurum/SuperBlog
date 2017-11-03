@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>{{.Name}} | SuperBlog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -18,20 +19,20 @@
 			</menuitem>
 		</menu>
 	</nav>
-	<article>
+	<article id="userform">
 		<h1>Passwort ändern für {{.Name}}</h1>
 		<form method="post" action="/passwort">
 			<p>
-				<input type="password" name="neu_pass" placeholder="Neues Passwort">
+				<input type="password" id="neu_pass" name="neu_pass" placeholder="Neues Passwort">
 			</p>
 			<p>
-				<input type="password" name="pass_wdh" placeholder="Passwort wiederholen">
+				<input type="password" id="pass_wdh" name="pass_wdh" placeholder="Passwort wiederholen">
 			</p>
 			<p>
-				<input type="password" name="alt_pass" placeholder="Altes Passwort">
+				<input type="password" id="alt_pass" name="alt_pass" placeholder="Altes Passwort">
 			</p>
 			<p class="submit">
-				<input type="submit" name="anmelden" value="Passwort ändern">
+				<input type="submit" id="anmelden" name="anmelden" value="Passwort ändern">
 			</p>
 			<p>
 			{{.Meldung}}

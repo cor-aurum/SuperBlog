@@ -1,96 +1,231 @@
+:root {
+  --primary:  #ff00b1;
+	--primarytext: #ffff00;
+  --background: #ffff00;
+	--foreground: var(--primarytext);
+  --secondary: #0000ff;
+	--secondarytext: var(--background);
+	--pre1: var(--primary);
+	--loginfields: var(--secondary);
+}
+
+* {
+	padding: 0;
+	margin: 0;
+	font-size: 100%;
+}
+
+input[type=text],
+input[type=password],
+input[type=number],
+input[type=button],
+input[type=submit],
+textarea{
+	background-color: var(--secondary);
+	color: var(--secondarytext);
+	font-weight: 700;
+	margin: .5em 0 .5em 0;
+	padding: .2em 1.5vw .2em 1.5vw;
+	width: 82vw;
+	border: 0 none;
+}
+input[type=text],
+input[type=password],
+input[type=number],
+textarea{
+	border-bottom: .01em solid var(--pre1);
+}
+textarea{
+	min-height: 5em;
+	max-height: 30vh;
+	resize: none;
+}
+input[type=submit],
+input[type=button]{
+	min-width:10em;
+	width: 85vw;
+	cursor: pointer;
+	background-color: var(--pre1);
+}
+#lname,
+#lpass,
+#neu_pass,
+#pass_wdh,
+#alt_pass{
+	border-bottom: .01em solid var(--loginfields);
+	background-color: var(--primary);
+}
+#anmelden{
+	background-color: var(--loginfields);
+}
+#loginform{
+	position: relative;
+	top: auto;
+	margin-top: 15vh;
+}
 body {
-	background-color: #ffff00;
-	color: #00ff00;
+	background-color: var(--background);
+	color: var(--foreground);
 }
 
 footer {
-	background-color: #ff00b1;
-	color: #ffff00;
+	background-color: var(--primary);
+	color: var(--primarytext);
+	padding:1vw;
 	position: fixed;
 	bottom: 0px;
+	width:94vw;
+	text-align:center;
+	margin: 0 2vw 0 2vw;
 }
 
 header {
-	background-color: #ff00b1;
-	color: #ffff00;
-	position: absolute;
+	background-color: var(--primary);
+	color: var(--primarytext);
+	position: fixed;
 	top: 0px;
-	font-size: 80px;
-	width: 100%;
+	font-size: 10vmin;
+	min-height: 10vmin;
+	width: 98vw;
 	left: 0px;
-	height: 100px;
-	top: 0px;
-	padding: 20px;
+	height: 11vh;
+	padding: 1vh 1vw 1vh 1vw;
 	text-align: center;
+	z-index: 1000;
 }
-
+articles{
+	margin: 0 4vw 0 4vw;
+	width:92vw;
+	zindex:1;
+}
 article {
-	background-color: #ff00b1;
-	color: #ffff00;
+	background-color: var(--primary);
+	color: var(--primarytext);
 	position: relative;
-	font-size: 25px;
-	left: 50%;
-	top: 150px;
-	padding: 20px;
-	left: 50%;
-	width: 60%;
-	margin-left: -30%;
-	margin-bottom: 20px;
+	font-size: 1.1em;
+	width:92vw;
+	padding:2vw;
+	margin: 1em 2vw 1.3em 2vw;
 }
 
 article h1 {
-	font-size: 35px;
+	font-size: 2em;
 }
 
 article nav {
 	font-style: italic;
-	font-size: 12px;
+	font-size: 1.1em;
 }
 
 a {
-	color: #ffff00;
+	color: var(--background);
 	text-decoration: none;
 }
 
 menu {
-	background-color: #0000ff;
-	color: #ffff00;
-	top: 150px;
-	position: absolute;
-	margin: 10px;
-	padding: 0px;
+	background-color: var(--secondary);
+	color: var(--secondarytext);
+	width:95.4vw;
+	padding:.3vw;
+	margin: 14vh 2vw 0 2vw;
 	list-style-type: none;
 }
 
 menu ul {
 	padding: 0px;
-	margin: 5px;
+	margin: .3em;
 }
 
 menu li a:link {
 	display: block;
-	border: 1px solid #ffff00;
-	background-color: #0000ff;
-	padding: 10px;
-	color: #ffff00;
+	cursor: pointer;
+	background-color: var(--secondary);
+	padding: .5em;
+	color: var(--secondarytext);
+	list-style-type: none;
 	text-decoration: none;
 	font-weight: bold;
 }
 
 menu li a:hover {
 	display: block;
-	background-color: #ff00b1;
-	color: #ffff00;
+	background-color: var(--primary);
+	color: var(--primarytext);
 }
 
 #kommentieren, #kommentar {
-	background-color: #0000ff;
-	margin: 20px;
+	background-color: var(--secondary);
+	margin: 1vw;
 	font-size: 20px;
-	padding: 15px;
+	padding: 2vw;
+	width:86vw;
 }
 
 #kommentieren textarea {
-	width: 80%;
-	height: 80px;
+	width: 82vw;
+	height: 5vh;;
+}
+
+@media screen and (min-width: 980px) and (orientation: landscape){
+
+	input[type=text],
+	input[type=password],
+	input[type=number],
+	input[type=button],
+	input[type=submit],
+	textarea{
+		width: 47vw;
+	}
+	input[type=submit],
+	input[type=button]{
+		width: 20vmin;
+	}
+	#loginform,
+	#userform{
+		margin: 15vh 20vw 1.3em 20vw;
+	}
+	article {
+		width:56vw;
+		padding:2vw;
+		margin: 1vh 0vw 1.3em 0vw;
+	}
+	articles {
+		position: absolute;
+		left: 16vw;
+		width:60vw;
+		position: absolute;
+		top: 14vh;
+	}
+	#kommentieren, #kommentar {
+		width:50vw;
+	}
+
+	#kommentieren textarea {
+		width: 47vw;
+		height: 5vh;;
+	}
+	menu {
+		top: 13vh;
+		position: absolute;
+		width:auto;
+		min-width: 13vw;
+		margin: 2vh;
+		padding: 0px;
+	}
+
+	menu ul {
+		padding: 0px;
+		margin: 5px;
+	}
+
+	menu li a:link {
+		border: 1px solid var(--background);
+		background-color: var(--secondary);
+	}
+	header{
+		position: absolute;
+	}
+	footer {
+		width:14vw;
+	}
 }

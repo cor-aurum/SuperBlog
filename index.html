@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>Startseite | SuperBlog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -16,6 +17,7 @@
 			</menuitem>
 		</menu>
 	</nav>
+	<articles>
 	{{with .Seiten}} {{range .}}
 	<article>
 		<h1>
@@ -39,6 +41,7 @@
 		{{.Inhalt}}
 	</article>
 	{{end}} {{end}}
+</articles>
 	<footer>
 		Siehe: <a href="https://github.com/cor-aurum/SuperBlog">Sourcecode
 			auf Github</a>

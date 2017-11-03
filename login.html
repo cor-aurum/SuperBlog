@@ -2,21 +2,22 @@
 <html>
 <head>
 <title>Login | SuperBlog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 	<header><a href="/">SuperBlog</a></header>
-	<article>
+	<article id="loginform">
 		<h1>Login</h1>
 			<form method="post" action="/login">
 				<p>
-					<input type="text" name="name" placeholder="Nutzername">
+					<input type="text" id="lname" name="name" placeholder="Nutzername">
 				</p>
 				<p>
-					<input type="password" name="pass" placeholder="Passwort">
+					<input type="password" id="lpass" name="pass" placeholder="Passwort">
 				</p>
 				<p class="submit">
-					<input type="submit" name="anmelden" value="Anmelden">
+					<input type="submit" id="anmelden" name="anmelden" value="Anmelden">
 				</p>
 			</form>
 			<p>
