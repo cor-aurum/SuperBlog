@@ -1,20 +1,20 @@
 :root {
   --primary:  #ff00b1;
-	--primarytext: #ffff00;
+  --primarytext: #ffff00;
   --background: #ffff00;
-	--foreground: var(--primarytext);
+  --foreground: var(--primarytext);
   --secondary: #0000ff;
-	--secondarytext: var(--background);
-	--pre1: var(--primary);
-	--loginfields: var(--secondary);
-	--headerheight: 13vh;
-	--hheight: 16vh;
+  --secondarytext: var(--background);
+  --pre1: var(--primary);
+  --loginfields: var(--secondary);
+  --headerheight: 13vh;
+  --hheight: 17vh;
 }
 
 * {
-	padding: 0;
-	margin: 0;
-	font-size: 100%;
+  padding: 0;
+  margin: 0;
+  font-size: 100%;
 }
 
 input[type=text],
@@ -23,214 +23,215 @@ input[type=number],
 input[type=button],
 input[type=submit],
 textarea{
-	background-color: var(--secondary);
-	color: var(--secondarytext);
-	font-weight: 700;
-	margin: .5em 0 .5em 0;
-	padding: .2em 1.5vw .2em 1.5vw;
-	width: 82vw;
-	border: 0 none;
+  background-color: var(--secondary);
+  color: var(--secondarytext);
+  font-weight: 700;
+  margin: .5em 0 .5em 0;
+  padding: .2em 1.5vw .2em 1.5vw;
+  width: 82vw;
+  border: 0 none;
 }
 input[type=text],
 input[type=password],
 input[type=number],
 textarea{
-	border-bottom: .01em solid var(--pre1);
+  border-bottom: .01em solid var(--pre1);
 }
 textarea{
-	min-height: 5em;
-	max-height: 30vh;
-	resize: none;
+  min-height: 5em;
+  max-height: 30vh;
+  resize: none;
 }
 input[type=submit],
 input[type=button]{
-	min-width:10em;
-	width: 85vw;
-	cursor: pointer;
-	background-color: var(--pre1);
+  min-width:10em;
+  width: 85vw;
+  cursor: pointer;
+  background-color: var(--pre1);
 }
 #lname,
 #lpass,
 #neu_pass,
 #pass_wdh,
 #alt_pass{
-	border-bottom: .01em solid var(--loginfields);
-	background-color: var(--primary);
+  border-bottom: .01em solid var(--loginfields);
+  background-color: var(--primary);
 }
 #anmelden{
-	background-color: var(--loginfields);
+  background-color: var(--loginfields);
 }
-#loginform{
-	position: relative;
-	top: auto;
-	margin-top: 15vh;
+#loginform,
+#userform{
+  position: relative;
+  top: auto;
+  margin-top: var(--hheight);
 }
 body {
-	background-color: var(--background);
-	color: var(--foreground);
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 footer {
-	background-color: var(--primary);
-	color: var(--primarytext);
-	padding:1vw;
-	position: fixed;
-	bottom: 0px;
-	width:94vw;
-	text-align:center;
-	margin: 0 2vw 0 2vw;
+  background-color: var(--primary);
+  color: var(--primarytext);
+  padding:1vw;
+  position: fixed;
+  bottom: 0px;
+  width:94vw;
+  text-align:center;
+  margin: 0 2vw 0 2vw;
 }
 
 header {
-	background-color: var(--primary);
-	color: var(--primarytext);
-	font-family: sans-serif;
-	font-weight: 600;
-	position: fixed;
-	top: 0px;
-	font-size: 10vmin;
-	min-height: 10vmin;
-	width: 98vw;
-	left: 0px;
-	height: var(--headerheight);
-	padding: 1vh 1vw 1vh 1vw;
-	text-align: center;
-	z-index: 1000;
+  background-color: var(--primary);
+  color: var(--primarytext);
+  font-family: sans-serif;
+  font-weight: 600;
+  position: fixed;
+  top: 0px;
+  font-size: 10vmin;
+  min-height: 10vmin;
+  width: 98vw;
+  left: 0px;
+  height: var(--headerheight);
+  padding: 1vh 1vw 1vh 1vw;
+  text-align: center;
+  z-index: 1000;
 }
 articles{
-	margin: 0 4vw 0 4vw;
-	width:92vw;
-	zindex:1;
+  margin: 0 4vw 0 4vw;
+  width:92vw;
+  zindex:1;
 }
 article {
-	background-color: var(--primary);
-	color: var(--primarytext);
-	position: relative;
-	font-size: 1.7em;
-	width:92vw;
-	padding:2vw;
-	margin: 1vh 2vw 0em 2vw;
+  background-color: var(--primary);
+  color: var(--primarytext);
+  position: relative;
+  font-size: 1.7em;
+  width:92vw;
+  padding:2vw;
+  margin: 0 2vw 1vh 2vw;
 }
 
 article h1 {
-	font-family: sans-serif;
-	font-size: 1.7em;
+  font-family: sans-serif;
+  font-size: 1.7em;
 }
 
 article nav {
-	font-style: italic;
-	font-size: 0.7em;
+  font-style: italic;
+  font-size: 0.7em;
 }
 
 a {
-	color: var(--background);
-	text-decoration: none;
+  color: var(--background);
+  text-decoration: none;
 }
 
 menu {
-	background-color: var(--secondary);
-	color: var(--secondarytext);
-	width:95.4vw;
-	padding:.3vw;
-	margin: var(--hheight) 2vw 0 2vw;
-	list-style-type: none;
+  background-color: var(--secondary);
+  color: var(--secondarytext);
+  width:95.4vw;
+  padding:.3vw;
+  margin: var(--hheight) 2vw 0 2vw;
+  list-style-type: none;
 }
 
 menu ul {
-	padding: 0px;
-	margin: .3em;
+  padding: 0px;
+  margin: .3em;
 }
 
 menu li a:link {
-	display: block;
-	cursor: pointer;
-	background-color: var(--secondary);
-	padding: .5em;
-	color: var(--secondarytext);
-	list-style-type: none;
-	text-decoration: none;
-	font-weight: bold;
+  display: block;
+  cursor: pointer;
+  background-color: var(--secondary);
+  padding: .5em;
+  color: var(--secondarytext);
+  list-style-type: none;
+  text-decoration: none;
+  font-weight: bold;
 }
 
 menu li a:hover {
-	display: block;
-	background-color: var(--primary);
-	color: var(--primarytext);
+  display: block;
+  background-color: var(--primary);
+  color: var(--primarytext);
 }
 
 #kommentieren, #kommentar {
-	background-color: var(--secondary);
-	margin: 1vw;
-	font-size: 20px;
-	padding: 2vw;
-	width:86vw;
+  background-color: var(--secondary);
+  margin: 1vw;
+  font-size: 20px;
+  padding: 2vw;
+  width:86vw;
 }
 
 #kommentieren textarea {
-	width: 82vw;
-	height: 5vh;;
+  width: 82vw;
+  height: 5vh;;
 }
 
 @media screen and (min-width: 980px) and (orientation: landscape){
 
-	input[type=text],
-	input[type=password],
-	input[type=number],
-	input[type=button],
-	input[type=submit],
-	textarea{
-		width: 47vw;
-	}
-	input[type=submit],
-	input[type=button]{
-		width: 20vmin;
-	}
-	#loginform,
-	#userform{
-		margin: var(--hheight) 20vw 1.3em 20vw;
-	}
-	article {
-		width:56vw;
-		padding:2vw;
-		margin: 1vh 0vw 1.3em 0vw;
-	}
-	articles {
-		position: absolute;
-		left: 16vw;
-		width:60vw;
-		position: absolute;
-		top: var(--hheight);
-	}
-	#kommentieren, #kommentar {
-		width:50vw;
-	}
+  input[type=text],
+  input[type=password],
+  input[type=number],
+  input[type=button],
+  input[type=submit],
+  textarea{
+  width: 47vw;
+  }
+  input[type=submit],
+  input[type=button]{
+  width: 20vmin;
+  }
+  #loginform,
+  #userform{
+  margin: var(--hheight) 20vw 1.3em 20vw;
+  }
+  article {
+  width:56vw;
+  padding:2vw;
+  margin: 0  0vw 1vh 0vw;
+  }
+  articles {
+  position: absolute;
+  left: 16vw;
+  width:60vw;
+  position: absolute;
+  top: var(--hheight);
+  }
+  #kommentieren, #kommentar {
+  width:50vw;
+  }
 
-	#kommentieren textarea {
-		width: 47vw;
-		height: 5vh;;
-	}
-	menu {
-		top: var(--hheight);
-		position: absolute;
-		width:auto;
-		min-width: 13vw;
-		margin: 1vh 2vh 2vh 2vh;
-		padding: 0px;
-	}
+  #kommentieren textarea {
+  width: 47vw;
+  height: 5vh;;
+  }
+  menu {
+  top: var(--hheight);
+  position: absolute;
+  width:16vw;
+  min-width: 13vw;
+  margin: 0 2vw 2vh 2vw;
+  padding: 0px;
+  }
 
-	menu ul {
-		padding: 0px;
-		margin: 5px;
-	}
+  menu ul {
+  padding: 0px;
+  margin: 5px;
+  }
 
-	menu li a:link {
-		border: 1px solid var(--background);
-		background-color: var(--secondary);
-	}
-	header{
-		position: absolute;
-	}
-	footer {
-		width:14vw;
-	}
+  menu li a:link {
+  border: 1px solid var(--background);
+  background-color: var(--secondary);
+  }
+  header{
+  position: absolute;
+  }
+  footer {
+  width:14vw;
+  }
 }
