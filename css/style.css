@@ -148,6 +148,15 @@ article {
   width:92vw;
   padding:2vw;
   margin: 0 2vw 1vh 2vw;
+  -webkit-transition: all 0.5s;
+	-moz-transition: all 0.5s;
+	transition: all 0.5s;
+}
+
+article:hover {
+	/*margin-left: -1vw;*/
+	box-shadow: 0.5vw 0.5vw 30px grey;
+	transform: scale(1.03);
 }
 
 article h1 {
