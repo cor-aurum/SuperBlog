@@ -119,20 +119,6 @@ header {
   padding: 1vh 0vw 1vh 0vw;
   text-align: center;
   z-index: 1000;
-  -webkit-transition: all 0.5s;
-	-moz-transition: all 0.5s;
-	transition: all 0.5s;
-}
-
-header.sticky {
-            position: fixed;
-            font-size: 5vmin;
-  			min-height: 5vmin;
-  			max-height: 6vmin;
-            width: 100%;
-            background-color: var(--menu);
-            text-align: left;
-            padding-left: 20px;
 }
 
 articles{
