@@ -2,10 +2,23 @@
 <html>
 <head>
 <title>{{.Titel}} | SuperBlog</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0,user-scalable=no">
 <link rel="stylesheet" href="../css/style.css">
+<script
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 </head>
 <body>
+	<script>
+$(window).scroll(function() {
+    if ($(this).scrollTop() > 1){  
+        $('header').addClass("sticky");
+    }
+    else{
+        $('header').removeClass("sticky");
+    }
+});
+</script>
 	<header>
 		<a href="/">SuperBlog</a>
 	</header>
@@ -65,7 +78,7 @@
 		</div>
 		{{end}} {{end}}
 	</article>
-</articles>
+	</articles>
 	<footer>
 		Siehe: <a href="https://github.com/cor-aurum/SuperBlog">Sourcecode
 			auf Github</a>
