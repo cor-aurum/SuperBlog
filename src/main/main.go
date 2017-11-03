@@ -6,7 +6,7 @@ IMPORTE
 import (
 	"bufio"
 	"crypto/rand"
-	"crypto/sha1"
+	"crypto/sha512"
 	"encoding/base64"
 	"encoding/json"
 	"flag"
@@ -137,7 +137,7 @@ func kekse(w http.ResponseWriter) http.Cookie {
 }
 
 func salzHash(name string, pass string) string {
-	h := sha1.New()
+	h := sha512.New()
 	salz := name + pass
 	return base64.URLEncoding.EncodeToString(h.Sum([]byte(salz)))
 }
