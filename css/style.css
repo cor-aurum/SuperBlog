@@ -1,4 +1,4 @@
-:root {
+/*:root {
   --primary:  #ff00b1;
   --primarytext: #ffff00;
   --background: #ffff00;
@@ -7,6 +7,25 @@
   --secondarytext: var(--background);
   --pre1: var(--primary);
   --loginfields: var(--secondary);
+  --menu: var(--secondary);
+  --menuhover: var(--primary);
+  --menuhovertext: var(--background);
+  --headerheight: 13vh;
+  --hheight: 17vh;
+}*/
+:root {
+  --primary:  #4a4a4a;
+  --primarytext: #f0f0f0;
+  --background: #f0f0f0;
+  --foreground: var(--primarytext);
+  --secondary: #f0f0f0;
+  --secondarytext: #4a4a4a;
+  --pre1: #33cca6;
+  --loginfields: #33cca6;
+  --logincolor: #f0f0f0;
+  --menu: #4a4a4a;
+  --menuhover: #6a6a6a;
+  --menuhovertext: #fff;
   --headerheight: 13vh;
   --hheight: 17vh;
 }
@@ -55,7 +74,7 @@ input[type=button]{
 #pass_wdh,
 #alt_pass{
   border-bottom: .01em solid var(--loginfields);
-  background-color: var(--primary);
+  background-color: var(--logincolor);
 }
 #anmelden{
   background-color: var(--loginfields);
@@ -65,6 +84,9 @@ input[type=button]{
   position: relative;
   top: auto;
   margin-top: var(--hheight);
+}
+#loginform{
+  background-color: var(--logincolor);
 }
 body {
   background-color: var(--background);
@@ -129,8 +151,8 @@ a {
 }
 
 menu {
-  background-color: var(--secondary);
-  color: var(--secondarytext);
+  background-color: var(--menu);
+  color: var(--menutext);
   width:95.4vw;
   padding:.3vw;
   margin: var(--hheight) 2vw 0 2vw;
@@ -145,9 +167,9 @@ menu ul {
 menu li a:link {
   display: block;
   cursor: pointer;
-  background-color: var(--secondary);
+  background-color: var(--menu);
   padding: .5em;
-  color: var(--secondarytext);
+  color: var(--menutext);
   list-style-type: none;
   text-decoration: none;
   font-weight: bold;
@@ -155,12 +177,13 @@ menu li a:link {
 
 menu li a:hover {
   display: block;
-  background-color: var(--primary);
-  color: var(--primarytext);
+  background-color: var(--menuhover);
+  color: var(--menuhovertext);
 }
 
 #kommentieren, #kommentar {
   background-color: var(--secondary);
+  color: var(--secondarytext);
   margin: 1vw;
   font-size: 20px;
   padding: 2vw;
@@ -226,7 +249,7 @@ menu li a:hover {
 
   menu li a:link {
   border: 1px solid var(--background);
-  background-color: var(--secondary);
+  background-color: var(--menu);
   }
   header{
   position: absolute;
