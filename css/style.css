@@ -1,4 +1,4 @@
-/*:root {
+:root {
   --primary:  #ff00b1;
   --primarytext: #ffff00;
   --background: #ffff00;
@@ -12,14 +12,14 @@
   --menuhovertext: var(--background);
   --headerheight: 13vh;
   --hheight: 17vh;
-}*/
-:root {
-  --primary:  #4a4a4a;
-  --primarytext: #f0f0f0;
-  --background: #f0f0f0;
+}
+/*:root {
+  --primary:  #ff00ff;
+  --primarytext: #729fcf;
+  --background: #729fcf;
   --foreground: var(--primarytext);
-  --secondary: #f0f0f0;
-  --secondarytext: #4a4a4a;
+  --secondary: #ad7fa8;
+  --secondarytext: #729fcf;
   --pre1: #33cca6;
   --loginfields: #33cca6;
   --logincolor: #f0f0f0;
@@ -28,7 +28,7 @@
   --menuhovertext: #fff;
   --headerheight: 13vh;
   --hheight: 17vh;
-}
+}*/
 
 * {
   padding: 0;
