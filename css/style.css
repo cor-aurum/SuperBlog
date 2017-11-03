@@ -27,7 +27,7 @@
   --menuhover: #6a6a6a;
   --menuhovertext: #fff;
   --headerheight: 13vh;
-  --hheight: 17vh;
+  --hheight: calc(var(--headerheight) + 4vh);
 }*/
 
 * {
