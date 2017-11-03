@@ -212,7 +212,7 @@ func logout(w http.ResponseWriter, r *http.Request) {
 
 func enthaelt(k []Kommentar, e Kommentar) bool {
 	for _, a := range k {
-		if a == e {
+		if a.Autor == e.Autor && a.Inhalt==e.Inhalt {
 			return true
 		}
 	}
@@ -324,6 +324,8 @@ func ladeProfile() {
 	dat, err := ioutil.ReadFile("user.json")
 	if err != nil {
 		fmt.Println("Lesen der Nutzerdaten fehlgeschlagen oder noch keine Nutzer vorhanden", err)
+		fmt.Println("Erstelle neue Nutzer...")
+		erstelleNutzer()
 		return
 	}
 	err = json.Unmarshal(dat, &p)
