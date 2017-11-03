@@ -7,6 +7,8 @@
 	--secondarytext: var(--background);
 	--pre1: var(--primary);
 	--loginfields: var(--secondary);
+	--headerheight: 13vh;
+	--hheight: 16vh;
 }
 
 * {
@@ -90,7 +92,7 @@ header {
 	min-height: 10vmin;
 	width: 98vw;
 	left: 0px;
-	height: 11vh;
+	height: var(--headerheight);
 	padding: 1vh 1vw 1vh 1vw;
 	text-align: center;
 	z-index: 1000;
@@ -107,7 +109,7 @@ article {
 	font-size: 1.7em;
 	width:92vw;
 	padding:2vw;
-	margin: 1em 2vw 0em 2vw;
+	margin: 1vh 2vw 0em 2vw;
 }
 
 article h1 {
@@ -130,7 +132,7 @@ menu {
 	color: var(--secondarytext);
 	width:95.4vw;
 	padding:.3vw;
-	margin: 14vh 2vw 0 2vw;
+	margin: var(--hheight) 2vw 0 2vw;
 	list-style-type: none;
 }
 
@@ -185,7 +187,7 @@ menu li a:hover {
 	}
 	#loginform,
 	#userform{
-		margin: 15vh 20vw 1.3em 20vw;
+		margin: var(--hheight) 20vw 1.3em 20vw;
 	}
 	article {
 		width:56vw;
@@ -197,7 +199,7 @@ menu li a:hover {
 		left: 16vw;
 		width:60vw;
 		position: absolute;
-		top: 14vh;
+		top: var(--hheight);
 	}
 	#kommentieren, #kommentar {
 		width:50vw;
@@ -208,11 +210,11 @@ menu li a:hover {
 		height: 5vh;;
 	}
 	menu {
-		top: 13vh;
+		top: var(--hheight);
 		position: absolute;
 		width:auto;
 		min-width: 13vw;
-		margin: 2vh;
+		margin: 1vh 2vh 2vh 2vh;
 		padding: 0px;
 	}
 
