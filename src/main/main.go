@@ -77,6 +77,8 @@ type Sitzung struct {
 type Bearbeiten struct {
 	Menu    []Menuitem
 	Meldung string
+	Titel   string
+	Inhalt  string
 }
 
 /*
@@ -149,10 +151,10 @@ func salzHash(name string, pass string) string {
 
 func startseite(w http.ResponseWriter, r *http.Request) {
 	seiten, err := ioutil.ReadDir("seite")
-	if err != nil {
-		fmt.Println(err)
-	}
 	start := Startseite{}
+	if err != nil {
+		start.Seiten = append(start.Seiten, Seite{Titel: "Noch keine Seiten vorhanden", Datum: time.Now(), Inhalt: "Schau später nochmal vorbei", Dateiname: "/", Autor: "SuperBlog"})
+	}
 	for _, seite := range seiten {
 		var s Seite
 		dat, err := ioutil.ReadFile("seite/" + seite.Name())
@@ -260,7 +262,12 @@ func seite(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	s.Menu = machMenu(s.Menu, r, 1)
+	_, name := gebeSitzung(r)
+	menuitem := 0
+	if s.Autor == name {
+		menuitem = 1
+	}
+	s.Menu = machMenu(s.Menu, r, menuitem)
 	t.Execute(w, s)
 }
 
@@ -383,33 +390,22 @@ func erstelleVerzeichnis(pfad string) {
 	}
 }
 
-func neu(w http.ResponseWriter, r *http.Request) {
-	login, name := gebeSitzung(r)
-	if !login {
-		http.Redirect(w, r, "/", 302)
-		return
-	}
+func erstelleSeite(w http.ResponseWriter, r *http.Request, altSeite Seite) {
 	b := Bearbeiten{}
+	b.Inhalt = altSeite.Inhalt
+	b.Titel = altSeite.Titel
 	titel := r.FormValue("titel")
 	inhalt := r.FormValue("inhalt")
 	if titel != "" || inhalt != "" {
 		if titel == "" || inhalt == "" {
 			b.Meldung = "Bitte Titel und Inhalt eintragen"
 		} else {
-			s := Seite{Autor: name, Titel: titel, Inhalt: inhalt, Datum: time.Now()}
-			seitenjson, _ := json.Marshal(s)
+			altSeite.Titel = titel
+			altSeite.Inhalt = inhalt
+			seitenjson, _ := json.Marshal(altSeite)
 			erstelleVerzeichnis("seite")
-			zufall := make([]byte, 8)
-			_, err := rand.Read(zufall)
-			if err != nil {
-				fmt.Println(err)
-			}
-			dateiname := make([]string, len(zufall))
-			for i := range zufall {
-				dateiname[i] = strconv.Itoa(int(zufall[i]))
-			}
-			ioutil.WriteFile("seite/"+strings.Join(dateiname, "")+".json", seitenjson, 0644)
-			http.Redirect(w, r, "seite/"+strings.Join(dateiname, ""), 302)
+			ioutil.WriteFile("seite/"+altSeite.Dateiname+".json", seitenjson, 0644)
+			http.Redirect(w, r, "/seite/"+altSeite.Dateiname, 302)
 		}
 	}
 	t, _ := template.ParseFiles("neu.html")
@@ -417,8 +413,40 @@ func neu(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, b)
 }
 
-func bearbeiten(w http.ResponseWriter, r *http.Request) {
+func neu(w http.ResponseWriter, r *http.Request) {
+	login, name := gebeSitzung(r)
+	if !login {
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+	zufall := make([]byte, 8)
+	_, err := rand.Read(zufall)
+	if err != nil {
+		fmt.Println(err)
+	}
+	dateiname := make([]string, len(zufall))
+	for i := range zufall {
+		dateiname[i] = strconv.Itoa(int(zufall[i]))
+	}
+	erstelleSeite(w, r, Seite{Autor: name, Datum: time.Now(), Dateiname: strings.Join(dateiname, "")})
+}
 
+func bearbeiten(w http.ResponseWriter, r *http.Request) {
+	dateiname := r.URL.Path[len("/bearbeiten/"):]
+	var s Seite
+	dat, err := ioutil.ReadFile("seite/" + dateiname + ".json")
+	if err != nil {
+		fmt.Println("Seite zum Bearbeiten konnte nicht geöffnet werden", err)
+		return
+	}
+	err = json.Unmarshal(dat, &s)
+	login, name := gebeSitzung(r)
+	if !login || s.Autor != name {
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+	s.Dateiname = dateiname
+	erstelleSeite(w, r, s)
 }
 
 func main() {
@@ -436,7 +464,7 @@ func main() {
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/passwort", passwort)
 	http.HandleFunc("/neu", neu)
-	http.HandleFunc("/bearbeiten", bearbeiten)
+	http.HandleFunc("/bearbeiten/", bearbeiten)
 	http.HandleFunc("/logout", logout)
 	http.HandleFunc("/profil", profil)
 	http.HandleFunc("/seite/", seite)

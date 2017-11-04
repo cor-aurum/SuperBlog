@@ -19,12 +19,12 @@
 	</nav>
 	<articles>
 	<article>
-		<form method="post" action="/neu">
+		<form method="post" action="">
 			<h1>
-				<input type="text" name="titel" placeholder="Titel">
+				<input type="text" name="titel" placeholder="Titel" value="{{.Titel}}">
 			</h1>
-			<textarea name="inhalt" placeholder="Artikel eingeben..."></textarea>
-			<input type="submit" name="erstellen" value="Seite erstellen">
+			<textarea name="inhalt" placeholder="Artikel eingeben...">{{.Inhalt}}</textarea>
+			<input type="submit" name="erstellen" value="Artikel speichern">
 		</form>
 		{{.Meldung}}
 	</article>
