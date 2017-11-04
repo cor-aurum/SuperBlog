@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Startseite | SuperBlog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+	<header><a href="/">SuperBlog</a></header>
+	<nav>
+		<menu>
+			<menuitem>
+			<ul>
+				{{with .Menu}} {{range .}}
+				<li><a href="{{.Ziel}}">{{.Text}}</a></li> {{end}} {{end}}
+			</ul>
+			</menuitem>
+		</menu>
+	</nav>
+	<articles>
+	<article>
+		<form method="post" action="">
+			<h1>
+				Artikel wirklich löschen?
+			</h1>
+			<a href="/loeschen/{{.Dateiname}}">Ja</a>
+			<a href="/">Nein</a>
+	</article>
+	</articles>
+	<footer>
+		Siehe: <a href="https://github.com/cor-aurum/SuperBlog">Sourcecode
+			auf Github</a>
+	</footer>
+</body>
+</html>

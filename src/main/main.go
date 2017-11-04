@@ -79,6 +79,7 @@ type Bearbeiten struct {
 	Meldung string
 	Titel   string
 	Inhalt  string
+	Dateiname string
 }
 
 /*
@@ -286,6 +287,7 @@ func machMenu(m []Menuitem, r *http.Request, seite int) []Menuitem {
 		switch seite {
 		case 1:
 			m = append(m, Menuitem{Ziel: "/bearbeiten/" + r.URL.Path[7:], Text: "Artikel bearbeiten"})
+			m = append(m, Menuitem{Ziel: "/bestaetigen/" + r.URL.Path[7:], Text: "Artikel löschen"})
 		case 2:
 			m = append(m, Menuitem{Ziel: "/neu", Text: "Artikel erstellen"})
 		}
@@ -449,6 +451,36 @@ func bearbeiten(w http.ResponseWriter, r *http.Request) {
 	erstelleSeite(w, r, s)
 }
 
+func loeschen(w http.ResponseWriter, r *http.Request) {
+	dateiname := r.URL.Path[len("/loeschen/"):]
+	var s Seite
+	dat, err := ioutil.ReadFile("seite/" + dateiname + ".json")
+	if err != nil {
+		fmt.Println("Seite zum Löschen konnte nicht geöffnet werden", err)
+		return
+	}
+	err = json.Unmarshal(dat, &s)
+	login, name := gebeSitzung(r)
+	if !login || s.Autor != name {
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+	s.Dateiname = dateiname
+	err = os.Remove("seite/"+dateiname+".json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	http.Redirect(w, r, "/", 302)
+}
+
+func bestaetigen(w http.ResponseWriter, r *http.Request) {
+	dateiname := r.URL.Path[len("/bestaetigen/"):]
+	b := Bearbeiten{Dateiname:dateiname}
+	t, _ := template.ParseFiles("loeschen.html")
+	b.Menu = machMenu(b.Menu, r, 0)
+	t.Execute(w, b)
+}
+
 func main() {
 	ladeProfile()
 	port := flag.Int("port", const_port, "Port für den Webserver")
@@ -464,6 +496,8 @@ func main() {
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/passwort", passwort)
 	http.HandleFunc("/neu", neu)
+	http.HandleFunc("/loeschen/", loeschen)
+	http.HandleFunc("/bestaetigen/", bestaetigen)
 	http.HandleFunc("/bearbeiten/", bearbeiten)
 	http.HandleFunc("/logout", logout)
 	http.HandleFunc("/profil", profil)
