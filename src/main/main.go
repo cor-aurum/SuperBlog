@@ -48,13 +48,14 @@ type Kommentar struct {
 }
 
 type Seite struct {
-	Menu       []Menuitem
-	Dateiname  string
-	Titel      string
-	Inhalt     string
-	Datum      time.Time
-	Autor      string
-	Kommentare []Kommentar
+	Menu        []Menuitem
+	Dateiname   string
+	Titel       string
+	Inhalt      string
+	Datum       time.Time
+	Autor       string
+	Kommentare  []Kommentar
+	Kommentator string
 }
 
 type Nutzerdaten struct {
@@ -75,10 +76,10 @@ type Sitzung struct {
 }
 
 type Bearbeiten struct {
-	Menu    []Menuitem
-	Meldung string
-	Titel   string
-	Inhalt  string
+	Menu      []Menuitem
+	Meldung   string
+	Titel     string
+	Inhalt    string
 	Dateiname string
 }
 
@@ -128,8 +129,8 @@ func gebeProfil(name string) *Profil {
 	return nil
 }
 
-func kekse(w http.ResponseWriter) http.Cookie {
-	b := make([]byte, 32)
+func gebeUUID(laenge int) string {
+	b := make([]byte, laenge)
 	_, err := rand.Read(b)
 	if err != nil {
 		fmt.Println(err)
@@ -138,10 +139,20 @@ func kekse(w http.ResponseWriter) http.Cookie {
 	for i := range b {
 		s[i] = strconv.Itoa(int(b[i]))
 	}
+	return strings.Join(s, "")
+}
+
+func kekse(w http.ResponseWriter) http.Cookie {
 	ablauf := time.Now().Add(time.Minute * time.Duration(timeout))
-	c := http.Cookie{Name: "id", Value: strings.Join(s, ""), Expires: ablauf}
+	c := http.Cookie{Name: "id", Value: gebeUUID(32), Expires: ablauf}
 	http.SetCookie(w, &c)
 	return c
+}
+
+func kommentarKeks(w http.ResponseWriter, name string) {
+	ablauf := time.Now().Add(time.Minute * time.Duration(timeout))
+	c := http.Cookie{Name: "Name", Value: name, Expires: ablauf}
+	http.SetCookie(w, &c)
 }
 
 func salzHash(name string, pass string) string {
@@ -227,11 +238,12 @@ func enthaelt(k []Kommentar, e Kommentar) bool {
 	return false
 }
 
-func erstelleKommentar(r *http.Request) {
+func erstelleKommentar(w http.ResponseWriter, r *http.Request) {
 	k := Kommentar{Autor: r.URL.Query().Get("autor"), Inhalt: r.URL.Query().Get("inhalt"), Datum: time.Now()}
 	if len(k.Autor) == 0 || len(k.Inhalt) == 0 {
 		return
 	}
+	kommentarKeks(w, r.URL.Query().Get("autor"))
 	var s Seite
 	dat, err := ioutil.ReadFile(r.URL.Path[1:] + ".json")
 	if err != nil {
@@ -251,9 +263,10 @@ func erstelleKommentar(r *http.Request) {
 }
 
 func seite(w http.ResponseWriter, r *http.Request) {
-	erstelleKommentar(r)
+	erstelleKommentar(w, r)
 	t, _ := template.ParseFiles("template.html")
 	var s Seite
+	kommentator, err := r.Cookie("Name")
 	dat, err := ioutil.ReadFile(r.URL.Path[1:] + ".json")
 	if err != nil {
 		http.Redirect(w, r, "/", 302)
@@ -264,6 +277,13 @@ func seite(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	_, name := gebeSitzung(r)
+	if name != "" {
+		s.Kommentator = name
+	} else {
+		if kommentator != nil {
+			s.Kommentator = kommentator.Value
+		}
+	}
 	menuitem := 0
 	if s.Autor == name {
 		menuitem = 1
@@ -363,7 +383,7 @@ func erstelleNutzer() {
 	input := bufio.NewReader(os.Stdin)
 	fmt.Print("Namen des neuen Benutzers eingeben: ")
 	name, _ := input.ReadString('\n')
-	if gebeProfil(name[:len(name)-1])!=nil {
+	if gebeProfil(name[:len(name)-1]) != nil {
 		fmt.Print("Benutzername bereits vorhanden\n")
 		erstelleNutzer()
 		return
@@ -426,16 +446,8 @@ func neu(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", 302)
 		return
 	}
-	zufall := make([]byte, 8)
-	_, err := rand.Read(zufall)
-	if err != nil {
-		fmt.Println(err)
-	}
-	dateiname := make([]string, len(zufall))
-	for i := range zufall {
-		dateiname[i] = strconv.Itoa(int(zufall[i]))
-	}
-	erstelleSeite(w, r, Seite{Autor: name, Datum: time.Now(), Dateiname: strings.Join(dateiname, "")})
+	dateiname := gebeUUID(8)
+	erstelleSeite(w, r, Seite{Autor: name, Datum: time.Now(), Dateiname: dateiname})
 }
 
 func bearbeiten(w http.ResponseWriter, r *http.Request) {
@@ -471,7 +483,7 @@ func loeschen(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.Dateiname = dateiname
-	err = os.Remove("seite/"+dateiname+".json")
+	err = os.Remove("seite/" + dateiname + ".json")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -480,7 +492,7 @@ func loeschen(w http.ResponseWriter, r *http.Request) {
 
 func bestaetigen(w http.ResponseWriter, r *http.Request) {
 	dateiname := r.URL.Path[len("/bestaetigen/"):]
-	b := Bearbeiten{Dateiname:dateiname}
+	b := Bearbeiten{Dateiname: dateiname}
 	t, _ := template.ParseFiles("loeschen.html")
 	b.Menu = machMenu(b.Menu, r, 0)
 	t.Execute(w, b)
