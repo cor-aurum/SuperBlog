@@ -363,6 +363,11 @@ func erstelleNutzer() {
 	input := bufio.NewReader(os.Stdin)
 	fmt.Print("Namen des neuen Benutzers eingeben: ")
 	name, _ := input.ReadString('\n')
+	if gebeProfil(name[:len(name)-1])!=nil {
+		fmt.Print("Benutzername bereits vorhanden\n")
+		erstelleNutzer()
+		return
+	}
 	fmt.Print("Passwort des neuen Benutzers eingeben: ")
 	pass, _ := input.ReadString('\n')
 	profile.Profile = append(profile.Profile, Profil{Name: name[:len(name)-1], Passwort: salzHash(name[:len(name)-1], pass[:len(pass)-1])})
@@ -374,7 +379,7 @@ func erstelleNutzer() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Print("Weitere Benutzer anlegen? (J/N): ")
+	fmt.Print("Weitere Benutzer anlegen? (j/N): ")
 	weiter, _ := input.ReadString('\n')
 	if weiter == "J\n" || weiter == "j\n" {
 		erstelleNutzer()
