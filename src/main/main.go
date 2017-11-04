@@ -55,7 +55,6 @@ type Seite struct {
 	Datum       time.Time
 	Autor       string
 	Kommentare  []Kommentar
-	Kommentator string
 }
 
 type Nutzerdaten struct {
@@ -243,7 +242,6 @@ func erstelleKommentar(w http.ResponseWriter, r *http.Request) {
 	if len(k.Autor) == 0 || len(k.Inhalt) == 0 {
 		return
 	}
-	kommentarKeks(w, r.URL.Query().Get("autor"))
 	var s Seite
 	dat, err := ioutil.ReadFile(r.URL.Path[1:] + ".json")
 	if err != nil {
@@ -266,7 +264,6 @@ func seite(w http.ResponseWriter, r *http.Request) {
 	erstelleKommentar(w, r)
 	t, _ := template.ParseFiles("template.html")
 	var s Seite
-	kommentator, err := r.Cookie("Name")
 	dat, err := ioutil.ReadFile(r.URL.Path[1:] + ".json")
 	if err != nil {
 		http.Redirect(w, r, "/", 302)
@@ -278,10 +275,10 @@ func seite(w http.ResponseWriter, r *http.Request) {
 	}
 	_, name := gebeSitzung(r)
 	if name != "" {
-		s.Kommentator = name
+		kommentarKeks(w, name)
 	} else {
-		if kommentator != nil {
-			s.Kommentator = kommentator.Value
+		if r.URL.Query().Get("autor") != "" {
+			kommentarKeks(w, r.URL.Query().Get("autor"))
 		}
 	}
 	menuitem := 0

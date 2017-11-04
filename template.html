@@ -41,10 +41,26 @@
 		{{.Inhalt}}
 		<div id="kommentieren">
 			<form action="">
-				<input type="text" name="autor" placeholder="Nickname" value="{{.Kommentator}}"/><br>
+				<input type="text" name="autor" placeholder="Nickname" id="komm" /><br>
 				<textarea name="inhalt" placeholder="Kommentieren"></textarea>
 				<br> <input type="submit" value="Absenden" />
 			</form>
+			<!-- 
+			Inspiriert von: https://wiki.selfhtml.org/wiki/JavaScript/Tutorials/cookies
+			 -->
+			<script>
+				  var Wert = "";
+				  if (document.cookie) {
+				    var Wertstart = document.cookie.indexOf("=") + 1;
+				    var Wertende = document.cookie.indexOf(";");
+				    if (Wertende == -1) {
+				      Wertende = document.cookie.length;
+					}
+					Wert = document.cookie.substring(Wertstart, Wertende);
+				  }
+				  document.getElementById("komm").value=Wert;
+
+			</script>
 		</div>
 		{{with .Kommentare}} {{range .}}
 		<div id="kommentar">
