@@ -142,6 +142,11 @@ article {
 article:hover {
 	/*margin-left: -1vw;*/
 	box-shadow: 0.5vw 0.5vw 30px grey;
+	background-color: var(--primary);
+	-webkit-transform: scale(1.03);
+	-moz-transform: scale(1.03);
+	-ms-transform: scale(1.03);
+	-o-transform: scale(1.03);
 	transform: scale(1.03);
 }
 
@@ -174,10 +179,6 @@ menu ul {
   margin: .3em;
 }
 
-menu li a {
-	transition: all 0.5s linear;
-}
-
 menu li a:link {
   display: block;
   cursor: pointer;
@@ -187,12 +188,16 @@ menu li a:link {
   list-style-type: none;
   text-decoration: none;
   font-weight: bold;
+  -webkit-transition: all 0.5s;
+	-moz-transition: all 0.5s;
+	transition: all 0.5s;
 }
 
 menu li a:hover {
   display: block;
   background-color: var(--menuhover);
   color: var(--menuhovertext);
+  padding-left:2vw;
 }
 
 #kommentieren, #kommentar {
