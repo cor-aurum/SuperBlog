@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Startseite | SuperBlog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+	<header><a href="/">SuperBlog</a></header>
+	<nav>
+		<menu>
+			<menuitem>
+			<ul>
+				{{with .Menu}} {{range .}}
+				<li><a href="{{.Ziel}}">{{.Text}}</a></li> {{end}} {{end}}
+			</ul>
+			</menuitem>
+		</menu>
+	</nav>
+	<articles>
+	<article>
+		<form method="post" action="/neu">
+			<h1>
+				<input type="text" name="titel" placeholder="Titel">
+			</h1>
+			<textarea name="inhalt" placeholder="Artikel eingeben..."></textarea>
+			<input type="submit" name="erstellen" value="Seite erstellen">
+		</form>
+		{{.Meldung}}
+	</article>
+	</articles>
+	<footer>
+		Siehe: <a href="https://github.com/cor-aurum/SuperBlog">Sourcecode
+			auf Github</a>
+	</footer>
+</body>
+</html>

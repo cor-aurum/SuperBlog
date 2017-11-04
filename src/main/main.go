@@ -74,6 +74,11 @@ type Sitzung struct {
 	Name  string
 }
 
+type Bearbeiten struct {
+	Menu    []Menuitem
+	Meldung string
+}
+
 /*
 Globale Variablen
 */
@@ -161,7 +166,7 @@ func startseite(w http.ResponseWriter, r *http.Request) {
 	}
 	sort.Slice(start.Seiten, func(i, j int) bool { return start.Seiten[i].Datum.After(start.Seiten[j].Datum) })
 	t, _ := template.ParseFiles("index.html")
-	start.Menu = machMenu(start.Menu, r)
+	start.Menu = machMenu(start.Menu, r, 2)
 	t.Execute(w, start)
 }
 
@@ -212,7 +217,7 @@ func logout(w http.ResponseWriter, r *http.Request) {
 
 func enthaelt(k []Kommentar, e Kommentar) bool {
 	for _, a := range k {
-		if a.Autor == e.Autor && a.Inhalt==e.Inhalt {
+		if a.Autor == e.Autor && a.Inhalt == e.Inhalt {
 			return true
 		}
 	}
@@ -255,15 +260,28 @@ func seite(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	s.Menu = machMenu(s.Menu, r)
+	s.Menu = machMenu(s.Menu, r, 1)
 	t.Execute(w, s)
 }
 
-func machMenu(m []Menuitem, r *http.Request) []Menuitem {
+/*
+seite:
+1: Artikeldetailansicht
+2: Startseite
+3: Profil
+0: Sonstiges
+*/
+func machMenu(m []Menuitem, r *http.Request, seite int) []Menuitem {
 	m = append(m, Menuitem{Ziel: "/", Text: "Startseite"})
 	login, name := gebeSitzung(r)
 	if login {
 		m = append(m, Menuitem{Ziel: "/profil", Text: name})
+		switch seite {
+		case 1:
+			m = append(m, Menuitem{Ziel: "/bearbeiten/" + r.URL.Path[7:], Text: "Artikel bearbeiten"})
+		case 2:
+			m = append(m, Menuitem{Ziel: "/neu", Text: "Artikel erstellen"})
+		}
 		m = append(m, Menuitem{Ziel: "/logout", Text: "Logout"})
 	} else {
 		m = append(m, Menuitem{Ziel: "/login", Text: "Login"})
@@ -279,7 +297,7 @@ func profil(w http.ResponseWriter, r *http.Request) {
 	}
 	p := Profil{Name: name}
 	t, _ := template.ParseFiles("profil.html")
-	p.Menu = machMenu(p.Menu, r)
+	p.Menu = machMenu(p.Menu, r, 3)
 	t.Execute(w, p)
 }
 
@@ -293,8 +311,8 @@ func passwort(w http.ResponseWriter, r *http.Request) {
 		passWdh := r.FormValue("pass_wdh")
 		passAlt := r.FormValue("alt_pass")
 		p := gebeProfil(name)
-		p.Menu=nil
-		p.Meldung=""
+		p.Menu = nil
+		p.Meldung = ""
 		if p.Passwort == salzHash(name, passAlt) {
 			if passNeu == passWdh {
 				p.Passwort = salzHash(name, passNeu)
@@ -314,7 +332,7 @@ func passwort(w http.ResponseWriter, r *http.Request) {
 			p.Meldung = "Das Passwort ist falsch"
 		}
 		t, _ := template.ParseFiles("profil.html")
-		p.Menu = machMenu(p.Menu, r)
+		p.Menu = machMenu(p.Menu, r, 0)
 		t.Execute(w, p)
 	}
 }
@@ -356,6 +374,53 @@ func erstelleNutzer() {
 	}
 }
 
+func erstelleVerzeichnis(pfad string) {
+	if _, err := os.Stat(pfad); os.IsNotExist(err) {
+		err := os.MkdirAll(pfad, 0711)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+}
+
+func neu(w http.ResponseWriter, r *http.Request) {
+	login, name := gebeSitzung(r)
+	if !login {
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+	b := Bearbeiten{}
+	titel := r.FormValue("titel")
+	inhalt := r.FormValue("inhalt")
+	if titel != "" || inhalt != "" {
+		if titel == "" || inhalt == "" {
+			b.Meldung = "Bitte Titel und Inhalt eintragen"
+		} else {
+			s := Seite{Autor: name, Titel: titel, Inhalt: inhalt, Datum: time.Now()}
+			seitenjson, _ := json.Marshal(s)
+			erstelleVerzeichnis("seite")
+			zufall := make([]byte, 8)
+			_, err := rand.Read(zufall)
+			if err != nil {
+				fmt.Println(err)
+			}
+			dateiname := make([]string, len(zufall))
+			for i := range zufall {
+				dateiname[i] = strconv.Itoa(int(zufall[i]))
+			}
+			ioutil.WriteFile("seite/"+strings.Join(dateiname, "")+".json", seitenjson, 0644)
+			http.Redirect(w, r, "seite/"+strings.Join(dateiname, ""), 302)
+		}
+	}
+	t, _ := template.ParseFiles("neu.html")
+	b.Menu = machMenu(b.Menu, r, 0)
+	t.Execute(w, b)
+}
+
+func bearbeiten(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func main() {
 	ladeProfile()
 	port := flag.Int("port", const_port, "Port für den Webserver")
@@ -370,6 +435,8 @@ func main() {
 	http.HandleFunc("/", startseite)
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/passwort", passwort)
+	http.HandleFunc("/neu", neu)
+	http.HandleFunc("/bearbeiten", bearbeiten)
 	http.HandleFunc("/logout", logout)
 	http.HandleFunc("/profil", profil)
 	http.HandleFunc("/seite/", seite)
