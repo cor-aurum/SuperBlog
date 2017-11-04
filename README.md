@@ -2,10 +2,10 @@
 Ein Webblog, geschrieben in der Programmiersprache Go.
 
 ## Benutzung
-go run /src/main/main.go [Optionen]
-oder:
-go build -o SuperBlog src/main/main.go
-./SuperBlog [Optionen]
+go run /src/main/main.go [Optionen]  
+oder:  
+go build -o SuperBlog src/main/main.go  
+./SuperBlog [Optionen]  
 
 Mögliche Optionen sind:  
 -nutzer  
