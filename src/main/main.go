@@ -174,6 +174,9 @@ func startseite(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		err = json.Unmarshal(dat, &s)
+		if len(s.Inhalt) > 1000 {
+			s.Inhalt=s.Inhalt[:1000]+"..."
+		}
 		s.Dateiname = "seite/" + seite.Name()[:len(seite.Name())-5]
 		start.Seiten = append(start.Seiten, s)
 	}
