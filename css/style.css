@@ -1,293 +1,338 @@
-:root {
-  --primary:  #ff00b1;
-  --primarytext: #ffff00;
-  --background: #ffff00;
-  --foreground: var(--primarytext);
-  --secondary: #0000ff;
-  --secondarytext: var(--background);
-  --pre1: var(--primary);
-  --loginfields: var(--secondary);
-  --menu: var(--secondary);
-  --menuhover: var(--primary);
-  --menuhovertext: var(--background);
-  --headerheight: 13vh;
-  --hheight: 17vh;
+:root{
+  --element-width: 96vw;
+  --body-background-color: #fafafa;
+  --accent-color: #4646b9;
+  --background-color: white;
+  --body-color: black;
+  --link-color: var(--body-color);
+
+  --header-height: 18vh;
+  --header-font-size: 12vmin;
+  --header-background-color: var(--background-color);
+  --header-color: var(--accent-color);
+
+  --menu-background-color: var(--accent-color);
+  --menu-color: var(--background-color);
+  --menuitem-background-color: var(--menu-background-color);
+  --menuitem-color: var(--menu-color);
+
+  --all-articles-background-color: var(--background-color);
+  --all-articles-color: var(--body-color);
+  --article-background-color: var(--background-color);
+  --article-color: var(--body-color);
+  --article-nav-color: var(--accent-color);
+
+  --comment-background-color: var(--background-color);
+  --comment-color: var(--body-color);
+  --comment-accent-color: var(--accent-color);
+  --comment-submit-color: var(--comment-background-color);
+  --comment-nav-color: var(--comment-color);
+
+  --login-background-color: var(--background-color);
+  --login-color: var(--body-color);
+  --login-accent-color: var(--accent-color);
+  --login-submit-color: var(--login-background-color);
+
+  --user-background-color: var(--background-color);
+  --user-color: var(--body-color);
+  --user-accent-color: var(--accent-color);
+  --user-submit-color: var(--user-background-color);
+
+  --new-background-color: var(--background-color);
+  --new-color: var(--body-color);
+  --new-accent-color: var(--accent-color);
+  --new-submit-color: var(--new-background-color);;
+
+  --delete-background-color: var(--background-color);
+  --delete-color: var(--body-color);
+  --delete-accent-color: var(--accent-color);
+  --delete-submit-color: var(--delete-background-color);;
+
+  --footer-background-color: var(--background-color);
+  --footer-color: var(--body-color);
 }
-/*:root {
-  --primary:  #ff00ff;
-  --primarytext: #729fcf;
-  --background: #729fcf;
-  --foreground: var(--primarytext);
-  --secondary: #ad7fa8;
-  --secondarytext: #729fcf;
-  --pre1: #33cca6;
-  --loginfields: #33cca6;
-  --logincolor: #f0f0f0;
-  --menu: #4a4a4a;
-  --menuhover: #6a6a6a;
-  --menuhovertext: #fff;
-  --headerheight: 13vh;
-  --hheight: calc(var(--headerheight) + 4vh);
-}*/
 
 * {
   padding: 0;
   margin: 0;
   font-size: 100%;
+  font-family: sans-serif;
+}
+a {
+  color: var(--link-color);
+  text-decoration: none;
 }
 
-input[type=text],
-input[type=password],
-input[type=number],
-input[type=button],
-input[type=submit],
-textarea{
-  background-color: var(--secondary);
-  color: var(--secondarytext);
-  font-weight: 700;
-  margin: .5em 0 .5em 0;
-  padding: .2em 1.5vw .2em 1.5vw;
-  width: 82vw;
-  border: 0 none;
-}
-input[type=text],
-input[type=password],
-input[type=number],
-textarea{
-  border-bottom: .01em solid var(--pre1);
-}
-textarea{
-  min-height: 5em;
-  max-height: 30vh;
-  resize: none;
-}
-input[type=submit],
-input[type=button]{
-  min-width:10em;
-  width: 85vw;
-  cursor: pointer;
-  background-color: var(--pre1);
-}
-#lname,
-#lpass,
-#neu_pass,
-#pass_wdh,
-#alt_pass{
-  border-bottom: .01em solid var(--loginfields);
-  background-color: var(--logincolor);
-}
-#anmelden{
-  background-color: var(--loginfields);
-}
-#loginform,
-#userform{
-  position: relative;
-  top: auto;
-  margin-top: var(--hheight);
-}
-#loginform{
-  background-color: var(--logincolor);
-}
-body {
-  background-color: var(--background);
-  color: var(--foreground);
+body{
+  background-color: var(--body-background-color);
+  color: var(--body-color)
 }
 
-footer {
-  background-color: var(--primary);
-  color: var(--primarytext);
-  padding:1vw;
-  position: fixed;
-  bottom: 0px;
-  width:94vw;
-  text-align:center;
-  margin: 0 2vw 0 2vw;
+header,
+menu,
+article,
+#kommentar {
+  box-shadow: 0 6px 8px 0 rgba(0, 0, 0, 0.5);
 }
+menu,
+article,
+#kommentar {
+  border-radius: 4px;
+}
+
 
 header {
-  background-color: var(--primary);
-  color: var(--primarytext);
-  font-family: sans-serif;
-  font-weight: 600;
   position: fixed;
-  top: 0px;
-  font-size: 10vmin;
+  top:0;
+  background-color: var(--header-background-color);
+  color: var(--header-color);
+  font-weight: 600;
+  height: var(--header-height);
+  width: 100vw;
+  font-size: var(--header-font-size);
   min-height: 10vmin;
-  width: 100%;
-  left: 0px;
-  height: var(--headerheight);
-  padding: 1vh 0vw 1vh 0vw;
   text-align: center;
+  -webkit-transition: all .3s;
+    -moz-transition: all .3s;
+    -ms-transition: all .3s;
+    -o-transition: all .3s;
+    transition: all .3s;
   z-index: 1000;
-  -webkit-transition: all 0.3s ease 0.3s;
-	-moz-transition: all 0.3s ease 0.3s;
-	transition: all 0.3s ease 0.3s;
+}
+header a{
+  color: inherit;
 }
 
-header:hover {
-	--headerheight: 80vh;
-	font-size:30vmin;
-	padding: 20vh 0vh 20vh 0vh;
-	-webkit-transition: all 0.5s ease 3s;
-	-moz-transition: all 0.5s ease 3s;
-	transition: all 0.5s ease 3s;
+
+menu {
+  background-color: var(--menu-background-color);
+  color: var(--menu-color);
+  font-size: 130%;
+  font-weight: 600;
+  padding: 2vh 2vw;
+  width: calc(var(--element-width) - 4vw);
+  margin: calc(var(--header-height) + 1.5vh) 2vw 2vh 2vw;
 }
 
-articles{
-  margin: 0 4vw 0 4vw;
-  width:92vw;
-  z-index:1;
+menu menuitem ul li{
+  background-color: var(--menuitem-background-color);
+  color: var(--menuitem-color);
+  list-style-type: none;
+  padding: 1.6vh 2vw;
+}
+menu menuitem ul li a {
+  background-color: var(--menuitem-background-color);
+  color: var(--menuitem-color);
+}
+menu menuitem ul li:hover{
+  filter: brightness(85%);
+  cursor: pointer;
 }
 
+all-articles {
+  --margin: calc(calc(100vw - var(--element-width)) / 2 );
+  background-color: var(--all-articles-background-color);
+  color: var(--all-articles-color);
+  width: var(--element-width);
+  margin: 0 var(--margin) 0 var(--margin);
+}
+#kommentar,
 article {
-  background-color: var(--primary);
-  color: var(--primarytext);
-  position: relative;
-  font-size: 1.7em;
-  width:92vw;
-  padding:2vw;
-  margin: 0 2vw 1vh 2vw;
-  -webkit-transition: all 0.5s;
-	-moz-transition: all 0.5s;
-	transition: all 0.5s;
+  background-color: var(--article-background-color);
+  color: var(--article-color);
+  margin: 0 0 2vh 0;
+  padding: 2vh 2vw 2vh 2vw;
+  font-size: 110%;
+  width: calc(var(--element-width) - 4vw);
 }
-
-article:hover {
-	/*margin-left: -1vw;*/
-	box-shadow: 0.5vw 0.5vw 30px grey;
-	background-color: var(--primary);
-	-webkit-transform: scale(1.03);
-	-moz-transform: scale(1.03);
-	-ms-transform: scale(1.03);
-	-o-transform: scale(1.03);
-	transform: scale(1.03);
-}
-
 article h1 {
-  font-family: sans-serif;
-  font-size: 1.7em;
+  font-size: 140%;
 }
 
 article nav {
+  color: var(--article-nav-color);
   font-style: italic;
-  font-size: 0.7em;
+  font-size: 70%;
 }
-
-a {
-  color: var(--background);
+article a {
+  color: var(--link-color);
   text-decoration: none;
 }
-
-menu {
-  background-color: var(--menu);
-  color: var(--menutext);
-  width:95.4vw;
-  padding:.3vw;
-  margin: var(--hheight) 2vw 0 2vw;
+#kommentieren{
+  background-color: var(--comment-background-color);
+  padding: .3em 0;
+}
+#kommentieren input,
+#kommentieren textarea{
+  background-color: var(--comment-background-color);
+  color: var(--comment-color);
+  border: 0 none;
+  border-bottom: .01em solid var(--comment-accent-color);
+  font-weight: 700;
+  margin: .5em 0 .5em 0;
+  padding: .6em 0 .6em 0;
+  width: 100%;
+}
+#kommentieren input[type=submit]{
+  background-color: var(--comment-accent-color);
+  color: var(--comment-submit-color);
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+}
+#deleteform form input[type=button]:hover,
+#newform form input[type=submit]:hover,
+#userform p input[type=submit]:hover,
+#loginform p input[type=submit]:hover,
+#kommentieren input[type=submit]:hover{
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.25);
+  filter: brightness(85%);
+}
+#kommentar {
+  background-color: var(--comment-background-color);
+  color: var(--comment-color);
+}
+#kommentar nav {
+  color: var(--comment-nav-color);
+  font-style: italic;
+  font-size: 80%;
+}
+#loginform {
+  --margin: calc(calc(100vw - var(--element-width)) / 2 );
+  margin: calc(var(--header-height) + 1.5vh) var(--margin) 2vh var(--margin);
+  background-color: var(--login-background-color);
+  color: var(--login-color);
+}
+#loginform p input{
+  background-color: var(--login-background-color);
+  color: var(--login-color);
+  border: 0 none;
+  border-bottom: .01em solid var(--login-accent-color);
+  font-weight: 700;
+  margin: .5em 0 .5em 0;
+  padding: .6em 0 .6em 0;
+  width: 100%;
+}#loginform p input[type=submit]{
+  background-color: var(--login-accent-color);
+  color: var(--login-submit-color);
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+}
+#userform {
+  --margin: calc(calc(100vw - var(--element-width)) / 2 );
+  margin: calc(var(--header-height) + 1.5vh) var(--margin) 2vh var(--margin);
+  background-color: var(--user-background-color);
+  color: var(--user-color);
+}
+#userform p input{
+  background-color: var(--user-background-color);
+  color: var(--user-color);
+  border: 0 none;
+  border-bottom: .01em solid var(--user-accent-color);
+  font-weight: 700;
+  margin: .5em 0 .5em 0;
+  padding: .6em 0 .6em 0;
+  width: 100%;
+}#userform p input[type=submit]{
+  background-color: var(--user-accent-color);
+  color: var(--user-submit-color);
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+}
+#newform {
+  --margin: calc(calc(100vw - var(--element-width)) / 2 );
+  margin: 0 0 2vh 0;
+  background-color: var(--new-background-color);
+  color: var(--new-color);
+}
+#newform form h1 input,
+#newform form input,
+#newform form textarea{
+  background-color: var(--new-background-color);
+  color: var(--new-color);
+  border: 0 none;
+  border-bottom: .01em solid var(--new-accent-color);
+  font-weight: 700;
+  margin: .5em 0 .5em 0;
+  padding: .6em 0 .6em 0;
+  width: 100%;
+}#newform form input[type=submit]{
+  background-color: var(--new-accent-color);
+  color: var(--new-submit-color);
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+}
+#deleteform {
+  --margin: calc(calc(100vw - var(--element-width)) / 2 );
+  margin: 0 0 2vh 0;
+  background-color: var(--delete-background-color);
+  color: var(--delete-color);
+}
+#deleteform form input{
+  background-color: var(--delete-background-color);
+  color: var(--delete-color);
+  border: 0 none;
+  border-bottom: .01em solid var(--delete-accent-color);
+  font-weight: 700;
+  margin: .5em 0 .5em 0;
+  padding: .6em 0 .6em 0;
+  width: 100%;
+}#deleteform form input[type=button]{
+  background-color: var(--delete-accent-color);
+  color: var(--delete-submit-color);
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
 }
 
-menu ul {
-  padding: 0px;
-  margin: .3em;
-  list-style-type: none;
+
+
+footer {
+  background-color: var(--footer-background-color);
+  color: var(--footer-color);
+  position: fixed;
+  bottom: 0;
+  height: 1.2em;
+  padding: .4em;
+  width:100vw;
+  text-align: center;
+  z-index: 1000;
+  box-shadow: 4px 4px 8px 4px rgba(0, 0, 0, 0.5);
 }
 
-menu li a:link {
-  display: block;
-  cursor: pointer;
-  background-color: var(--menu);
-  padding: .5em;
-  color: var(--menutext);
-  list-style-type: none;
-  text-decoration: none;
-  font-weight: bold;
-  -webkit-transition: all 0.5s;
-	-moz-transition: all 0.5s;
-	transition: all 0.5s;
-}
-
-menu li a:hover {
-  display: block;
-  background-color: var(--menuhover);
-  color: var(--menuhovertext);
-  padding-left:2vw;
-}
-
-#kommentieren, #kommentar {
-  background-color: var(--secondary);
-  color: var(--secondarytext);
-  margin: 1vw;
-  font-size: 20px;
-  padding: 2vw;
-  width:86vw;
-}
-
-#kommentieren textarea {
-  width: 82vw;
-  height: 5vh;
-}
-
-@media screen and (min-width: 980px) and (orientation: landscape){
-
-  input[type=text],
-  input[type=password],
-  input[type=number],
-  input[type=button],
-  input[type=submit],
-  textarea{
-  width: 47vw;
+@media screen and (min-width: 980px){
+  :root{
+    --element-width: 50vw;
   }
-  input[type=submit],
-  input[type=button]{
-  width: 20vmin;
-  }
-  #loginform,
-  #userform{
-  margin: var(--hheight) 20vw 1.3em 20vw;
-  }
-  article {
-  width:56vw;
-  padding:2vw;
-  margin: 0  0vw 1vh 0vw;
-  }
-  articles {
-  position: absolute;
-  left: 16vw;
-  width:60vw;
-  position: absolute;
-  top: var(--hheight);
-  }
-  #kommentieren, #kommentar {
-  width:50vw;
-  }
-
-  #kommentieren textarea {
-  width: 47vw;
-  height: 5vh;;
+  all-articles{
+    position: absolute;
+    top: calc(var(--header-height) + 1.5vh);
   }
   menu {
-  top: var(--hheight);
-  position: absolute;
-  width:16vw;
-  min-width: 13vw;
-  margin: 0 2vw 2vh 2vw;
-  padding: 0px;
+    position: fixed;
+    top:0;
+    padding: calc(calc(var(--header-height) + 1.5vh) + 1em) 2vw 0 2vw;
+    width: calc(calc(calc(100vw - var(--element-width)) / 2 ) - 8vw);
+    height: 100vh;
+    margin: 0;
+    border-radius: 0;
+    -webkit-transition: all .3s;
+    -moz-transition: all .3s;
+    -ms-transition: all .3s;
+    -o-transition: all .3s;
+    transition: all .3s;
   }
-
-  menu ul {
-  padding: 0px;
-  margin: 5px;
-  }
-
-  menu li a:link {
-  border: 1px solid var(--background);
-  background-color: var(--menu);
-  }
-  header{
-  position: absolute;
-  }
-
-  footer {
-  width:14vw;
-  }
+footer{
+  background-color:rgba(0,0,0,0);
+  color: var(--menuitem-color);
+  padding: 1em 2vw 1em 2vw;
+  width: calc(calc(calc(100vw - var(--element-width)) / 2 ) - 8vw);
+  margin: 0;
+  border-radius: 0;
+  box-shadow: 0 0 0 0 ;
+}
+footer a {
+  color: var(--menuitem-color);
+}
+footer a:hover {
+  filter: brightness(75%);
+}
 }

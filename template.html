@@ -5,8 +5,27 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0,user-scalable=no">
 <link rel="stylesheet" href="../css/style.css">
+<script>
+function init() {
+    window.addEventListener('scroll', function(e){
+        var distanceY = window.pageYOffset || document.documentElement.scrollTop,
+            shrinkOn = 200,
+            header = document.querySelector("header");
+        if (distanceY > shrinkOn) {
+            document.documentElement.style.setProperty('--header-height','7vh');
+						document.documentElement.style.setProperty('--header-font-size','7vmin');
+        } else {
+              document.documentElement.style.setProperty('--header-height','18vh');
+							document.documentElement.style.setProperty('--header-font-size','12vmin');
+        }
+    });
+}
+</script>
 </head>
 <body>
+	<script>
+	window.onload = init();
+	</script>
 	<header>
 		<a href="/">SuperBlog</a>
 	</header>
@@ -20,7 +39,7 @@
 			</menuitem>
 		</menu>
 	</nav>
-	<articles>
+	<all-articles>
 	<article>
 		<h1>{{.Titel}}</h1>
 		<nav>
@@ -39,13 +58,15 @@
 			</time>
 		</nav>
 		{{.Inhalt}}
+	</article>
+	<article>
 		<div id="kommentieren">
 			<form action="">
 				<input type="text" name="autor" placeholder="Nickname" id="komm" /><br>
 				<textarea name="inhalt" placeholder="Kommentieren"></textarea>
 				<br> <input type="submit" value="Absenden" />
 			</form>
-			<!-- 
+			<!--
 			Inspiriert von: https://wiki.selfhtml.org/wiki/JavaScript/Tutorials/cookies
 			 -->
 			<script>
@@ -62,6 +83,8 @@
 
 			</script>
 		</div>
+	</article>
+
 		{{with .Kommentare}} {{range .}}
 		<div id="kommentar">
 			<nav>
@@ -81,8 +104,7 @@
 			{{.Inhalt}}
 		</div>
 		{{end}} {{end}}
-	</article>
-	</articles>
+</all-articles>
 	<footer>
 		Siehe: <a href="https://github.com/cor-aurum/SuperBlog">Sourcecode
 			auf Github</a>

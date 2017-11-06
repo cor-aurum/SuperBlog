@@ -17,16 +17,16 @@
 			</menuitem>
 		</menu>
 	</nav>
-	<articles>
-	<article>
+	<all-articles>
+	<article id="deleteform">
 		<form method="post" action="">
 			<h1>
 				Artikel wirklich löschen?
 			</h1>
-			<a href="/loeschen/{{.Dateiname}}">Ja</a>
-			<a href="/">Nein</a>
+			<input type="button" value="Ja" onclick="location.href='/loeschen/{{.Dateiname}}';">
+			<input type="button" value="Nein" onclick="location.href='/';">
 	</article>
-	</articles>
+	</all-articles>
 	<footer>
 		Siehe: <a href="https://github.com/cor-aurum/SuperBlog">Sourcecode
 			auf Github</a>

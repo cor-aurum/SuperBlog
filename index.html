@@ -4,8 +4,27 @@
 <title>Startseite | SuperBlog</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="../css/style.css">
+<script>
+function init() {
+    window.addEventListener('scroll', function(e){
+        var distanceY = window.pageYOffset || document.documentElement.scrollTop,
+            shrinkOn = 200,
+            header = document.querySelector("header");
+        if (distanceY > shrinkOn) {
+            document.documentElement.style.setProperty('--header-height','7vh');
+						document.documentElement.style.setProperty('--header-font-size','7vmin');
+        } else {
+              document.documentElement.style.setProperty('--header-height','18vh');
+							document.documentElement.style.setProperty('--header-font-size','12vmin');
+        }
+    });
+}
+</script>
 </head>
 <body>
+	<script>
+	window.onload = init();
+	</script>
 	<header>SuperBlog</header>
 	<nav>
 		<menu>
@@ -17,7 +36,7 @@
 			</menuitem>
 		</menu>
 	</nav>
-	<articles>
+	<all-articles>
 	{{with .Seiten}} {{range .}}
 	<article>
 		<h1>
@@ -41,7 +60,7 @@
 		{{.Inhalt}}
 	</article>
 	{{end}} {{end}}
-</articles>
+</all-articles>
 	<footer>
 		Siehe: <a href="https://github.com/cor-aurum/SuperBlog">Sourcecode
 			auf Github</a>

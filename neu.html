@@ -4,8 +4,12 @@
 <title>Startseite | SuperBlog</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="../css/style.css">
+<script src="../script/script.js"></script>
 </head>
 <body>
+	<script>
+	window.onload = resizeheader();
+	</script>
 	<header><a href="/">SuperBlog</a></header>
 	<nav>
 		<menu>
@@ -17,8 +21,8 @@
 			</menuitem>
 		</menu>
 	</nav>
-	<articles>
-	<article>
+	<all-articles>
+	<article id="newform">
 		<form method="post" action="">
 			<h1>
 				<input type="text" name="titel" placeholder="Titel" value="{{.Titel}}">
@@ -28,7 +32,7 @@
 		</form>
 		{{.Meldung}}
 	</article>
-	</articles>
+	</all-articles>
 	<footer>
 		Siehe: <a href="https://github.com/cor-aurum/SuperBlog">Sourcecode
 			auf Github</a>
