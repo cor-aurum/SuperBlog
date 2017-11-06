@@ -180,6 +180,9 @@ func startseite(w http.ResponseWriter, r *http.Request) {
 		s.Dateiname = "seite/" + seite.Name()[:len(seite.Name())-5]
 		start.Seiten = append(start.Seiten, s)
 	}
+	if len(start.Seiten)==0 {
+		start.Seiten = append(start.Seiten, Seite{Titel: "Keine Seiten mehr vorhanden", Datum: time.Now(), Inhalt: "Schau später nochmal vorbei", Dateiname: "/", Autor: "SuperBlog"})
+	}
 	sort.Slice(start.Seiten, func(i, j int) bool { return start.Seiten[i].Datum.After(start.Seiten[j].Datum) })
 	t, _ := template.ParseFiles("index.html")
 	start.Menu = machMenu(start.Menu, r, 2)

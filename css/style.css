@@ -125,8 +125,7 @@ header {
 }
 
 header:hover {
-	height: 80vh;
-	opacity: 0.9;
+	--headerheight: 80vh;
 	font-size:30vmin;
 	padding: 20vh 0vh 20vh 0vh;
 	-webkit-transition: all 0.5s ease 3s;
