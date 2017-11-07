@@ -1,0 +1,53 @@
+:root{
+  --element-width: 96vw;
+  --body-background-color: #E5E5E5;
+  --accent-color: #9F9F9F;
+  --background-color: #3333FF;
+  --body-color: #E5E5E5;
+  --link-color: var(--body-color);
+
+  --header-height: 18vh;
+  --header-font-size: 12vmin;
+  --header-background-color: var(--background-color);
+  --header-color: var(--accent-color);
+
+  --menu-background-color: var(--accent-color);
+  --menu-color: var(--background-color);
+  --menuitem-background-color: var(--menu-background-color);
+  --menuitem-color: var(--menu-color);
+
+  --all-articles-background-color: var(--body-background-color);
+  --all-articles-color: var(--body-color);
+  --article-background-color: var(--background-color);
+  --article-color: var(--body-color);
+  --article-nav-color: var(--accent-color);
+
+  --comment-background-color: var(--background-color);
+  --comment-color: var(--body-color);
+  --comment-accent-color: var(--accent-color);
+  --comment-submit-color: var(--comment-background-color);
+  --comment-nav-color: var(--comment-color);
+
+  --login-background-color: var(--background-color);
+  --login-color: var(--body-color);
+  --login-accent-color: var(--accent-color);
+  --login-submit-color: var(--login-background-color);
+
+  --user-background-color: var(--background-color);
+  --user-color: var(--body-color);
+  --user-accent-color: var(--accent-color);
+  --user-submit-color: var(--user-background-color);
+
+  --new-background-color: var(--background-color);
+  --new-color: var(--body-color);
+  --new-accent-color: var(--accent-color);
+  --new-submit-color: var(--new-background-color);;
+
+  --delete-background-color: var(--background-color);
+  --delete-color: var(--body-color);
+  --delete-accent-color: var(--accent-color);
+  --delete-submit-color: var(--delete-background-color);;
+
+  --footer-background-color: var(--background-color);
+  --footer-color: var(--body-color);
+}
