@@ -48,13 +48,14 @@ type Kommentar struct {
 }
 
 type Seite struct {
-	Menu        []Menuitem
-	Dateiname   string
-	Titel       string
-	Inhalt      string
-	Datum       time.Time
-	Autor       string
-	Kommentare  []Kommentar
+	Menu       []Menuitem
+	Dateiname  string
+	Titel      string
+	Inhalt     string
+	Datum      time.Time
+	Autor      string
+	Kommentare []Kommentar
+	Bearbeitet time.Time
 }
 
 type Nutzerdaten struct {
@@ -175,12 +176,12 @@ func startseite(w http.ResponseWriter, r *http.Request) {
 		}
 		err = json.Unmarshal(dat, &s)
 		if len(s.Inhalt) > 1000 {
-			s.Inhalt=s.Inhalt[:1000]+"..."
+			s.Inhalt = s.Inhalt[:1000] + "..."
 		}
 		s.Dateiname = "seite/" + seite.Name()[:len(seite.Name())-5]
 		start.Seiten = append(start.Seiten, s)
 	}
-	if len(start.Seiten)==0 {
+	if len(start.Seiten) == 0 {
 		start.Seiten = append(start.Seiten, Seite{Titel: "Keine Seiten mehr vorhanden", Datum: time.Now(), Inhalt: "Schau später nochmal vorbei", Dateiname: "/", Autor: "SuperBlog"})
 	}
 	sort.Slice(start.Seiten, func(i, j int) bool { return start.Seiten[i].Datum.After(start.Seiten[j].Datum) })
@@ -468,6 +469,7 @@ func bearbeiten(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.Dateiname = dateiname
+	s.Bearbeitet=time.Now()
 	erstelleSeite(w, r, s)
 }
 
