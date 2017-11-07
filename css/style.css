@@ -1,9 +1,9 @@
 :root{
   --element-width: 96vw;
-  --body-background-color: #ffff00;
-  --accent-color: #0000ff;
-  --background-color: #ff00b1;
-  --body-color: #0000ff;
+  --body-background-color: #E5E5E5;
+  --accent-color: #9F9F9F;
+  --background-color: #3333FF;
+  --body-color: #E5E5E5;
   --link-color: var(--body-color);
 
   --header-height: 18vh;
