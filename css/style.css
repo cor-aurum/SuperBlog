@@ -172,7 +172,7 @@ article a {
   color: var(--comment-color);
   border: 0 none;
   border-bottom: .01em solid var(--comment-accent-color);
-  font-weight: 700;
+  font-weight: 500;
   margin: .5em 0 .5em 0;
   padding: .6em 0 .6em 0;
   width: 100%;
@@ -190,6 +190,7 @@ article a {
 #kommentieren input[type=submit]:hover{
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.25);
   filter: brightness(85%);
+  cursor: pointer;
 }
 #kommentar {
   background-color: var(--comment-background-color);
@@ -200,6 +201,7 @@ article a {
   font-style: italic;
   font-size: 80%;
 }
+#kommentieren,
 #loginform,
 #userform,
 #newform{
