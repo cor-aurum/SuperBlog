@@ -121,8 +121,11 @@ menu menuitem ul li{
   padding: 1.6vh 2vw;
 }
 menu menuitem ul li a {
+  display: block;
   background-color: var(--menuitem-background-color);
   color: var(--menuitem-color);
+  height: 100%;
+  width: 100%;
 }
 menu menuitem ul li:hover{
   filter: brightness(85%);
@@ -179,7 +182,7 @@ article a {
   border-radius: 4px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
 }
-#deleteform form input[type=button]:hover,
+#deleteform form a:hover,
 #newform form input[type=submit]:hover,
 #userform p input[type=submit]:hover,
 #loginform p input[type=submit]:hover,
@@ -267,20 +270,23 @@ article a {
   background-color: var(--delete-background-color);
   color: var(--delete-color);
 }
-#deleteform form input{
+#deleteform {
+  --margin: calc(calc(100vw - var(--element-width)) / 2 );
+  margin: 0 0 2vh 0;
   background-color: var(--delete-background-color);
   color: var(--delete-color);
-  border: 0 none;
-  border-bottom: .01em solid var(--delete-accent-color);
-  font-weight: 700;
-  margin: .5em 0 .5em 0;
-  padding: .6em 0 .6em 0;
-  width: 100%;
-}#deleteform form input[type=button]{
+}
+#deleteform form a{
+  display: block;
   background-color: var(--delete-accent-color);
   color: var(--delete-submit-color);
   border-radius: 4px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+  margin: .5em 0 .5em 0;
+  padding: .6em 0 .6em 0;
+  width: 100%;
+  font-weight: 700;
+  text-align:center;
 }
 
 

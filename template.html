@@ -59,6 +59,18 @@ function init() {
 		</nav>
 		{{.Inhalt}}
 	</article>
+	<p>
+		<script>
+		datum = {{.Bearbeitet}};
+		datum = datum.split('T');
+		datum[0]=datum[0].split('-');
+		uhrzeit=datum[1].split('.');
+		if(datum[0][0]!="0001")
+			{
+				document.write("<div id=\"kommentar\">Bearbeitet am: "+datum[0][2]+'.'+datum[0][1]+'.'+datum[0][0]+' um '+uhrzeit[0] + "</div>");
+			}
+			</script>
+	</p>
 	<article>
 		<div id="kommentieren">
 			<form action="">
@@ -84,7 +96,6 @@ function init() {
 			</script>
 		</div>
 	</article>
-
 		{{with .Kommentare}} {{range .}}
 		<div id="kommentar">
 			<nav>
@@ -104,18 +115,6 @@ function init() {
 			{{.Inhalt}}
 		</div>
 		{{end}} {{end}}
-		<p>
-			<script>
-			datum = {{.Bearbeitet}};
-			datum = datum.split('T');
-			datum[0]=datum[0].split('-');
-			uhrzeit=datum[1].split('.');
-			if(datum[0][0]!="0001")
-				{
-					document.write("Bearbeitet am: "+datum[0][2]+'.'+datum[0][1]+'.'+datum[0][0]+' um '+uhrzeit[0]);
-				}
-				</script>
-		</p>
 </all-articles>
 	<footer>
 		Siehe: <a href="https://github.com/cor-aurum/SuperBlog">Sourcecode
