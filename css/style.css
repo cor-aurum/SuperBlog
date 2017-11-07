@@ -1,9 +1,9 @@
 :root{
   --element-width: 96vw;
-  --body-background-color: #fafafa;
-  --accent-color: #4646b9;
-  --background-color: white;
-  --body-color: black;
+  --body-background-color: #ffff00;
+  --accent-color: #0000ff;
+  --background-color: #ff00b1;
+  --body-color: #0000ff;
   --link-color: var(--body-color);
 
   --header-height: 18vh;
@@ -16,7 +16,7 @@
   --menuitem-background-color: var(--menu-background-color);
   --menuitem-color: var(--menu-color);
 
-  --all-articles-background-color: var(--background-color);
+  --all-articles-background-color: var(--body-background-color);
   --all-articles-color: var(--body-color);
   --article-background-color: var(--background-color);
   --article-color: var(--body-color);
