@@ -16,3 +16,5 @@
 /.project
 /user.json
 /seite/
+/server.crt
+/server.key

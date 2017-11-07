@@ -503,6 +503,10 @@ func bestaetigen(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, b)
 }
 
+
+//go generate openssl genrsa -out server.key 4096
+//go generate openssl ecparam -genkey -name secp384r1 -out server.key
+//go generate openssl req -new -x509 -sha512 -key server.key -out server.crt -days 3650
 func main() {
 	ladeProfile()
 	port := flag.Int("port", const_port, "Port für den Webserver")
@@ -524,7 +528,7 @@ func main() {
 	http.HandleFunc("/logout", logout)
 	http.HandleFunc("/profil", profil)
 	http.HandleFunc("/seite/", seite)
-	err := http.ListenAndServe(":"+strconv.Itoa(*port), nil)
+	err := http.ListenAndServeTLS(":"+strconv.Itoa(*port), "server.crt", "server.key", nil)
 	if err != nil {
 		fmt.Println(err)
 	}
