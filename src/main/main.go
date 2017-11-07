@@ -504,9 +504,9 @@ func bestaetigen(w http.ResponseWriter, r *http.Request) {
 }
 
 
-//go generate openssl genrsa -out server.key 4096
-//go generate openssl ecparam -genkey -name secp384r1 -out server.key
-//go generate openssl req -new -x509 -sha512 -key server.key -out server.crt -days 3650
+//go:generate openssl genrsa -out server.key 4096
+//go:generate openssl ecparam -genkey -name secp384r1 -out server.key
+//go:generate openssl req -new -x509 -sha512 -key server.key -out server.crt -days 3650
 func main() {
 	ladeProfile()
 	port := flag.Int("port", const_port, "Port für den Webserver")
