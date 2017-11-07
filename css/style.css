@@ -62,6 +62,9 @@ a {
   color: var(--link-color);
   text-decoration: none;
 }
+textarea{
+  resize: vertical;
+}
 
 body{
   background-color: var(--body-background-color);
@@ -138,13 +141,14 @@ all-articles {
   background-color: var(--all-articles-background-color);
   color: var(--all-articles-color);
   width: var(--element-width);
-  margin: 0 var(--margin) 0 var(--margin);
+  margin: 0 var(--margin) 3vh var(--margin);
 }
 #kommentar,
 article {
+  --margin: calc(calc(100vw - var(--element-width)) / 2 );
   background-color: var(--article-background-color);
   color: var(--article-color);
-  margin: 0 0 2vh 0;
+  margin: 0 var(--margin) 2vh var(--margin);
   padding: 2vh 2vw 2vh 2vw;
   font-size: 110%;
   width: calc(var(--element-width) - 4vw);
@@ -319,6 +323,10 @@ footer {
   all-articles{
     position: absolute;
     top: calc(var(--header-height) + 1.5vh);
+  }
+  #kommentar,
+  article{
+    margin: 0 0 2vh 0;
   }
   menu {
     position: fixed;
