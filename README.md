@@ -36,7 +36,7 @@ openssl req -new -x509 -sha512 -key server.key -out server.crt -days 3650
 Es ist darauf zu achten, dass die Namen der Zertifikate bei server.key und server.crt belassen werden, da eine Zuordung sonst nicht stattfinden kann. Darüber hinaus müssen die Zertifikate im gleichen Verzeichnis liegen wie die im Repository vorhandenen .html Dateien.
 
 ## Theming
-SuperBlog ist für ein einfaches Theming konzipiert. Im Verzeichnis css/ liegt eine Datei theme.css in der alle Farben der Weboberfläche definiert werden. Empfohlen seien beispielsweise folgende erste Zeilen (bestehende Einträge ersetzen):
+SuperBlog ist für ein einfaches Theming konzipiert. Im Verzeichnis css/ liegt eine Datei theme.css in der alle Farben der Weboberfläche definiert werden. Empfohlen seien beispielsweise folgende erste Zeilen (bestehende Einträge ersetzen):  
   --element-width: 96vw;  
   --body-background-color: #ffff00;  
   --accent-color: #0000ff;  
