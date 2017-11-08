@@ -37,9 +37,9 @@ Es ist darauf zu achten, dass die Namen der Zertifikate bei server.key und serve
 
 ## Theming
 SuperBlog ist für ein einfaches Theming konzipiert. Im Verzeichnis css/ liegt eine Datei theme.css in der alle Farben der Weboberfläche definiert werden. Empfohlen seien beispielsweise folgende erste Zeilen (bestehende Einträge ersetzen):
-  --element-width: 96vw;
-  --body-background-color: #ffff00;
-  --accent-color: #0000ff;
-  --background-color: #ff00b1;
-  --body-color: #ffff00;
-  --link-color: var(--body-color);
+  --element-width: 96vw;  
+  --body-background-color: #ffff00;  
+  --accent-color: #0000ff;  
+  --background-color: #ff00b1;  
+  --body-color: #ffff00;  
+  --link-color: var(--body-color);  
