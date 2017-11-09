@@ -1,5 +1,6 @@
 :root{
   --element-width: 96vw;
+  --element-width-mobile: 50vw;
   --body-background-color: #E5E5E5;
   --accent-color: #9F9F9F;
   --background-color: #3333FF;

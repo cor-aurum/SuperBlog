@@ -266,7 +266,7 @@ footer {
 
 @media screen and (min-width: 980px){
   :root{
-    --element-width: 50vw;
+    --element-width: var(--element-width-mobile);
   }
   all-articles{
     position: absolute;
