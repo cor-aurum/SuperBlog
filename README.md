@@ -28,10 +28,10 @@ Sowohl Kommentare als auch die Artikel auf der Startseite sind chronologisch ang
 
 
 Für die Benutzung von SuperBlog wird ein TLS Zertifikat benötigt. Dieses kann entweder von einer Zertifizierungsstelle der Wahl erstellt oder selbst generiert werden. Bei dieser Variante ist allerdings zu beachten, dass der Browser des Endnutzers eine Warnung aussprechen wird.
-Die Generierung wird unter Linux folgendermaßen initiiert:
-openssl genrsa -out server.key 4096
-openssl ecparam -genkey -name secp384r1 -out server.key
-openssl req -new -x509 -sha512 -key server.key -out server.crt -days 3650
+Die Generierung wird unter Linux folgendermaßen initiiert:  
+openssl genrsa -out server.key 4096  
+openssl ecparam -genkey -name secp384r1 -out server.key  
+openssl req -new -x509 -sha512 -key server.key -out server.crt -days 3650  
 
 Es ist darauf zu achten, dass die Namen der Zertifikate bei server.key und server.crt belassen werden, da eine Zuordung sonst nicht stattfinden kann. Darüber hinaus müssen die Zertifikate im gleichen Verzeichnis liegen wie die im Repository vorhandenen .html Dateien.
 
