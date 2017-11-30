@@ -12,4 +12,3 @@ func TestEnthaelt(t *testing.T){
 func TestErstelleKommentar(t *testing.T){
 	
 }
-

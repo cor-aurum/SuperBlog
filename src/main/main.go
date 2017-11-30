@@ -26,6 +26,7 @@ Konstanten
 */
 const const_timeout int = 15
 const const_port int = 8000
+const const_host string = ""
 
 /*
 Typen
@@ -144,7 +145,7 @@ func gebeUUID(laenge int) string {
 
 func kekse(w http.ResponseWriter) http.Cookie {
 	ablauf := time.Now().Add(time.Minute * time.Duration(timeout))
-	c := http.Cookie{Name: "id", Value: gebeUUID(32), Expires: ablauf}
+	c := http.Cookie{Name: "id", Value: gebeUUID(128), Expires: ablauf}
 	http.SetCookie(w, &c)
 	return c
 }
@@ -510,6 +511,7 @@ func bestaetigen(w http.ResponseWriter, r *http.Request) {
 func main() {
 	ladeProfile()
 	port := flag.Int("port", const_port, "Port für den Webserver")
+	host := flag.String("host", const_host, "Host für den Webserver")
 	flag.IntVar(&timeout, "timeout", const_timeout, "Timeout von Sitzungen in Minuten")
 	var neuerNutzer bool
 	flag.BoolVar(&neuerNutzer, "nutzer", false, "Neue Benutzer anlegen")
@@ -528,7 +530,7 @@ func main() {
 	http.HandleFunc("/logout", logout)
 	http.HandleFunc("/profil", profil)
 	http.HandleFunc("/seite/", seite)
-	err := http.ListenAndServeTLS(":"+strconv.Itoa(*port), "server.crt", "server.key", nil)
+	err := http.ListenAndServeTLS(*host+":"+strconv.Itoa(*port), "server.crt", "server.key", nil)
 	if err != nil {
 		fmt.Println(err)
 	}
