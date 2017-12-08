@@ -91,6 +91,12 @@ Globale Variablen
 var sitzungen []Sitzung
 var timeout int
 var profile Nutzerdaten
+var templateProfil *template.Template
+var templateSeite *template.Template
+var templateLogin *template.Template
+var templateNeu *template.Template
+var templateLoeschen *template.Template
+var templateIndex *template.Template
 
 /*
 Funktionen
@@ -186,9 +192,8 @@ func startseite(w http.ResponseWriter, r *http.Request) {
 		start.Seiten = append(start.Seiten, Seite{Titel: "Keine Seiten mehr vorhanden", Datum: time.Now(), Inhalt: "Schau später nochmal vorbei", Dateiname: "/", Autor: "SuperBlog"})
 	}
 	sort.Slice(start.Seiten, func(i, j int) bool { return start.Seiten[i].Datum.After(start.Seiten[j].Datum) })
-	t, _ := template.ParseFiles("index.html")
 	start.Menu = machMenu(start.Menu, r, 2)
-	t.Execute(w, start)
+	templateIndex.Execute(w, start)
 }
 
 func pruefeLogin(name string, pass string) bool {
@@ -219,14 +224,12 @@ func machLogin(w http.ResponseWriter, r *http.Request) (bool, bool) {
 func login(w http.ResponseWriter, r *http.Request) {
 	login, erfolg := machLogin(w, r)
 	if !login {
-		t, _ := template.ParseFiles("login.html")
-		t.Execute(w, nil)
+		templateLogin.Execute(w, nil)
 	} else {
 		if erfolg {
 			http.Redirect(w, r, "/", 302)
 		} else {
-			t, _ := template.ParseFiles("login.html")
-			t.Execute(w, "Login fehlgeschlagen")
+			templateLogin.Execute(w, "Login fehlgeschlagen")
 		}
 	}
 }
@@ -270,7 +273,6 @@ func erstelleKommentar(w http.ResponseWriter, r *http.Request) {
 
 func seite(w http.ResponseWriter, r *http.Request) {
 	erstelleKommentar(w, r)
-	t, _ := template.ParseFiles("template.html")
 	var s Seite
 	dat, err := ioutil.ReadFile(r.URL.Path[1:] + ".json")
 	if err != nil {
@@ -294,7 +296,7 @@ func seite(w http.ResponseWriter, r *http.Request) {
 		menuitem = 1
 	}
 	s.Menu = machMenu(s.Menu, r, menuitem)
-	t.Execute(w, s)
+	templateSeite.Execute(w, s)
 }
 
 /*
@@ -330,9 +332,8 @@ func profil(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	p := Profil{Name: name}
-	t, _ := template.ParseFiles("profil.html")
 	p.Menu = machMenu(p.Menu, r, 3)
-	t.Execute(w, p)
+	templateProfil.Execute(w, p)
 }
 
 func passwort(w http.ResponseWriter, r *http.Request) {
@@ -440,9 +441,8 @@ func erstelleSeite(w http.ResponseWriter, r *http.Request, altSeite Seite) {
 			http.Redirect(w, r, "/seite/"+altSeite.Dateiname, 302)
 		}
 	}
-	t, _ := template.ParseFiles("neu.html")
 	b.Menu = machMenu(b.Menu, r, 0)
-	t.Execute(w, b)
+	templateNeu.Execute(w, b)
 }
 
 func neu(w http.ResponseWriter, r *http.Request) {
@@ -499,15 +499,10 @@ func loeschen(w http.ResponseWriter, r *http.Request) {
 func bestaetigen(w http.ResponseWriter, r *http.Request) {
 	dateiname := r.URL.Path[len("/bestaetigen/"):]
 	b := Bearbeiten{Dateiname: dateiname}
-	t, _ := template.ParseFiles("loeschen.html")
 	b.Menu = machMenu(b.Menu, r, 0)
-	t.Execute(w, b)
+	templateLoeschen.Execute(w, b)
 }
 
-
-//go:generate openssl genrsa -out server.key 4096
-//go:generate openssl ecparam -genkey -name secp384r1 -out server.key
-//go:generate openssl req -new -x509 -sha512 -key server.key -out server.crt -days 3650
 func main() {
 	ladeProfile()
 	port := flag.Int("port", const_port, "Port für den Webserver")
@@ -519,6 +514,12 @@ func main() {
 	if neuerNutzer {
 		erstelleNutzer()
 	}
+	templateProfil = template.Must(template.ParseFiles("profil.html"))
+	templateSeite = template.Must(template.ParseFiles("template.html"))
+	templateNeu = template.Must(template.ParseFiles("neu.html"))
+	templateLoeschen = template.Must(template.ParseFiles("loeschen.html"))
+	templateLogin = template.Must(template.ParseFiles("login.html"))
+	templateIndex = template.Must(template.ParseFiles("index.html"))
 	http.Handle("/css/", http.StripPrefix("/css", http.FileServer(http.Dir("css"))))
 	http.HandleFunc("/", startseite)
 	http.HandleFunc("/login", login)
