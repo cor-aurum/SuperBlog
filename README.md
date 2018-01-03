@@ -1,6 +1,9 @@
 # SuperBlog
 Ein Webblog, geschrieben in der Programmiersprache Go.
 
+## Autoren
+3818468, 6985153, 9875672
+
 ## Benutzung
 go run /src/main/main.go [Optionen]  
 oder:  

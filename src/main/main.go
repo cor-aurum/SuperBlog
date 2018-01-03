@@ -1,3 +1,5 @@
+/* Autoren: 3818468, 6985153, 9875672 */
+
 package main
 
 /*
@@ -24,6 +26,7 @@ import (
 /*
 Konstanten
 */
+
 const const_timeout int = 15
 const const_port int = 8000
 const const_host string = ""
@@ -32,22 +35,26 @@ const const_host string = ""
 Typen
 */
 
+/*Eigenschaften für die Index-Seite*/
 type Startseite struct {
 	Menu   []Menuitem
 	Seiten []Seite
 }
 
+/*Menüeinträge*/
 type Menuitem struct {
 	Ziel string
 	Text string
 }
 
+/*einzelner Kommentar*/
 type Kommentar struct {
 	Autor  string
 	Datum  time.Time
 	Inhalt string
 }
 
+/*Eigenschaften für eine Blog-Seite*/
 type Seite struct {
 	Menu       []Menuitem
 	Dateiname  string
@@ -59,10 +66,12 @@ type Seite struct {
 	Bearbeitet time.Time
 }
 
+/*Nutzerdaten*/
 type Nutzerdaten struct {
 	Profile []Profil
 }
 
+/*einzelnes Profil*/
 type Profil struct {
 	Menu     []Menuitem
 	Name     string
@@ -70,12 +79,14 @@ type Profil struct {
 	Meldung  string
 }
 
+/*einzelne Sitzung*/
 type Sitzung struct {
 	Keks  http.Cookie
 	Datum time.Time
 	Name  string
 }
 
+/*Eigenschaften für die Bearbeiten-Seite*/
 type Bearbeiten struct {
 	Menu      []Menuitem
 	Meldung   string
@@ -102,6 +113,11 @@ var templateIndex *template.Template
 Funktionen
 */
 
+
+/*
+Gibt an, ob eine Sitzung vorhanden ist
+Falls Ja: Gibt Name des eingeloggten Users als zweiten Rückgabewert zurück
+*/
 func gebeSitzung(r *http.Request) (bool, string) {
 	keks, err := r.Cookie("id")
 	if err != nil {
@@ -115,6 +131,9 @@ func gebeSitzung(r *http.Request) (bool, string) {
 	return false, ""
 }
 
+/*
+Entfernt eine Sitzung
+*/
 func loescheSitzung(r *http.Request) {
 	keks, err := r.Cookie("id")
 	if err != nil {
@@ -127,6 +146,9 @@ func loescheSitzung(r *http.Request) {
 	}
 }
 
+/*
+Gibt ein Profil anhand des übergebenen Profilnamens zurück
+*/
 func gebeProfil(name string) *Profil {
 	for i, profil := range profile.Profile {
 		if profil.Name == name {
@@ -136,6 +158,9 @@ func gebeProfil(name string) *Profil {
 	return nil
 }
 
+/*
+Gibt eine einzigartige ID mit der Länge laenge zurück
+*/
 func gebeUUID(laenge int) string {
 	b := make([]byte, laenge)
 	_, err := rand.Read(b)
@@ -149,6 +174,9 @@ func gebeUUID(laenge int) string {
 	return strings.Join(s, "")
 }
 
+/*
+Setzt einen Cookie
+*/
 func kekse(w http.ResponseWriter) http.Cookie {
 	ablauf := time.Now().Add(time.Minute * time.Duration(timeout))
 	c := http.Cookie{Name: "id", Value: gebeUUID(128), Expires: ablauf}
@@ -156,18 +184,27 @@ func kekse(w http.ResponseWriter) http.Cookie {
 	return c
 }
 
+/*
+Setzt einen Cookie mit dem Namen des Kommentators eines Kommentares
+*/
 func kommentarKeks(w http.ResponseWriter, name string) {
 	ablauf := time.Now().Add(time.Minute * time.Duration(timeout))
 	c := http.Cookie{Name: "Name", Value: name, Expires: ablauf}
 	http.SetCookie(w, &c)
 }
 
+/*
+Erstellt einen Hash aus Name und Passwort des Users
+*/
 func salzHash(name string, pass string) string {
 	h := sha512.New()
 	salz := name + pass
 	return base64.URLEncoding.EncodeToString(h.Sum([]byte(salz)))
 }
 
+/*
+Liefert die Index-Seite mit einer Liste von (gekürzten) Blog-Einträgen aus
+*/
 func startseite(w http.ResponseWriter, r *http.Request) {
 	seiten, err := ioutil.ReadDir("seite")
 	start := Startseite{}
@@ -196,6 +233,9 @@ func startseite(w http.ResponseWriter, r *http.Request) {
 	templateIndex.Execute(w, start)
 }
 
+/*
+Prüft, ob der eingegebene Login gültig ist
+*/
 func pruefeLogin(name string, pass string) bool {
 	pass = salzHash(name, pass)
 	for _, profil := range profile.Profile {
@@ -206,6 +246,9 @@ func pruefeLogin(name string, pass string) bool {
 	return false
 }
 
+/*
+Loggt einen User mit den eingetragenen Nutzerinformationen ein und erstellt eine neue Sitzung
+*/
 func machLogin(w http.ResponseWriter, r *http.Request) (bool, bool) {
 	name := r.FormValue("name")
 	pass := r.FormValue("pass")
@@ -221,6 +264,9 @@ func machLogin(w http.ResponseWriter, r *http.Request) (bool, bool) {
 	return true, true
 }
 
+/*
+Liefert die Login-Seite aus
+*/
 func login(w http.ResponseWriter, r *http.Request) {
 	login, erfolg := machLogin(w, r)
 	if !login {
@@ -234,11 +280,17 @@ func login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+/*
+Loggt einen User aus, löscht seine Sitzung und leitet ihn auf die Index-Seite um
+*/
 func logout(w http.ResponseWriter, r *http.Request) {
 	loescheSitzung(r)
 	http.Redirect(w, r, "/", 302)
 }
 
+/*
+Prüft, ob ein Kommentar in einer Liste von Kommentaren bereits vorhanden ist
+*/
 func enthaelt(k []Kommentar, e Kommentar) bool {
 	for _, a := range k {
 		if a.Autor == e.Autor && a.Inhalt == e.Inhalt {
@@ -248,6 +300,9 @@ func enthaelt(k []Kommentar, e Kommentar) bool {
 	return false
 }
 
+/*
+Erstellt einen Kommentar aus den HTTP-Get- Parametern
+*/
 func erstelleKommentar(w http.ResponseWriter, r *http.Request) {
 	k := Kommentar{Autor: r.URL.Query().Get("autor"), Inhalt: r.URL.Query().Get("inhalt"), Datum: time.Now()}
 	if len(k.Autor) == 0 || len(k.Inhalt) == 0 {
@@ -271,6 +326,9 @@ func erstelleKommentar(w http.ResponseWriter, r *http.Request) {
 	ioutil.WriteFile(r.URL.Path[1:]+".json", b, 0644)
 }
 
+/*
+Liefert eine Blog-Seite aus und erlaubt de Kommentar-Erstellung
+*/
 func seite(w http.ResponseWriter, r *http.Request) {
 	erstelleKommentar(w, r)
 	var s Seite
@@ -300,6 +358,7 @@ func seite(w http.ResponseWriter, r *http.Request) {
 }
 
 /*
+Erstellt dynamisch ein Hauptmenü
 seite:
 1: Artikeldetailansicht
 2: Startseite
@@ -325,6 +384,9 @@ func machMenu(m []Menuitem, r *http.Request, seite int) []Menuitem {
 	return m
 }
 
+/*
+Liefert die Profil-Seite aus
+*/
 func profil(w http.ResponseWriter, r *http.Request) {
 	login, name := gebeSitzung(r)
 	if !login {
@@ -336,6 +398,9 @@ func profil(w http.ResponseWriter, r *http.Request) {
 	templateProfil.Execute(w, p)
 }
 
+/*
+Liefert die Passwort-Änderungsseite aus
+*/
 func passwort(w http.ResponseWriter, r *http.Request) {
 	login, name := gebeSitzung(r)
 	if !login {
@@ -372,6 +437,9 @@ func passwort(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+/*
+Lädt alle Profile aus der user.json
+*/
 func ladeProfile() {
 	var p Nutzerdaten
 	dat, err := ioutil.ReadFile("user.json")
@@ -385,6 +453,9 @@ func ladeProfile() {
 	profile = p
 }
 
+/*
+Ermöglicht es, beliebig viele Nutzer über die Kommandozeile anzulegen und prüft dabei auf bereits vorhanden sein
+*/
 func erstelleNutzer() {
 	input := bufio.NewReader(os.Stdin)
 	fmt.Print("Namen des neuen Benutzers eingeben: ")
@@ -414,6 +485,9 @@ func erstelleNutzer() {
 	}
 }
 
+/*
+Erstellt ein Verzeichnis mit dem angegebenen Pfad
+*/
 func erstelleVerzeichnis(pfad string) {
 	if _, err := os.Stat(pfad); os.IsNotExist(err) {
 		err := os.MkdirAll(pfad, 0711)
@@ -423,6 +497,9 @@ func erstelleVerzeichnis(pfad string) {
 	}
 }
 
+/*
+Liefert die Blogeintrag-Erstellenseite aus
+*/
 func erstelleSeite(w http.ResponseWriter, r *http.Request, altSeite Seite) {
 	b := Bearbeiten{}
 	b.Inhalt = altSeite.Inhalt
@@ -445,6 +522,9 @@ func erstelleSeite(w http.ResponseWriter, r *http.Request, altSeite Seite) {
 	templateNeu.Execute(w, b)
 }
 
+/*
+Erstellt einen neuen Blogeintrag
+*/
 func neu(w http.ResponseWriter, r *http.Request) {
 	login, name := gebeSitzung(r)
 	if !login {
@@ -455,6 +535,9 @@ func neu(w http.ResponseWriter, r *http.Request) {
 	erstelleSeite(w, r, Seite{Autor: name, Datum: time.Now(), Dateiname: dateiname})
 }
 
+/*
+Bearbeitet einen bestehenden Blogeintrag
+*/
 func bearbeiten(w http.ResponseWriter, r *http.Request) {
 	dateiname := r.URL.Path[len("/bearbeiten/"):]
 	var s Seite
@@ -474,6 +557,9 @@ func bearbeiten(w http.ResponseWriter, r *http.Request) {
 	erstelleSeite(w, r, s)
 }
 
+/*
+Löscht einen Blogeintrag
+*/
 func loeschen(w http.ResponseWriter, r *http.Request) {
 	dateiname := r.URL.Path[len("/loeschen/"):]
 	var s Seite
@@ -496,6 +582,9 @@ func loeschen(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", 302)
 }
 
+/*
+Fragt nach einer Bestätigung, ob ein Blogeintrag gelöscht werden soll
+*/
 func bestaetigen(w http.ResponseWriter, r *http.Request) {
 	dateiname := r.URL.Path[len("/bestaetigen/"):]
 	b := Bearbeiten{Dateiname: dateiname}
@@ -503,6 +592,9 @@ func bestaetigen(w http.ResponseWriter, r *http.Request) {
 	templateLoeschen.Execute(w, b)
 }
 
+/*
+Startet das Programm, initialisiert die Variablen mit übergebenen Flags, parsed die Templates und startet den Webserver
+*/
 func main() {
 	ladeProfile()
 	port := flag.Int("port", const_port, "Port für den Webserver")
