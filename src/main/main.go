@@ -413,9 +413,9 @@ func passwort(w http.ResponseWriter, r *http.Request) {
 		p := gebeProfil(name)
 		p.Menu = nil
 		p.Meldung = ""
-		if p.Passwort == salzHash(name, passAlt) {
+		if p.Passwort == SalzHash(name, passAlt) {
 			if passNeu == passWdh {
-				p.Passwort = salzHash(name, passNeu)
+				p.Passwort = SalzHash(name, passNeu)
 				b, err := json.Marshal(profile)
 				if err != nil {
 					fmt.Println(err)
@@ -467,7 +467,7 @@ func erstelleNutzer() {
 	}
 	fmt.Print("Passwort des neuen Benutzers eingeben: ")
 	pass, _ := input.ReadString('\n')
-	profile.Profile = append(profile.Profile, Profil{Name: name[:len(name)-1], Passwort: salzHash(name[:len(name)-1], pass[:len(pass)-1])})
+	profile.Profile = append(profile.Profile, Profil{Name: name[:len(name)-1], Passwort: SalzHash(name[:len(name)-1], pass[:len(pass)-1])})
 	b, err := json.Marshal(profile)
 	if err != nil {
 		fmt.Println(err)
@@ -553,7 +553,7 @@ func bearbeiten(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.Dateiname = dateiname
-	s.Bearbeitet=time.Now()
+	s.Bearbeitet = time.Now()
 	erstelleSeite(w, r, s)
 }
 
