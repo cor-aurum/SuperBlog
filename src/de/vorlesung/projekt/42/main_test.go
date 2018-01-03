@@ -9,12 +9,19 @@ ung zur Nutzung von übergebenen Providern kam dafür zu spät.
 */
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 )
+
+func TestCreateTestUser(t *testing.T) {
+	t.Log("adding a loaded user to global variable.")
+	name := "Max Mustermann\n"
+	pass := "1234567890\n"
+	t.Log("mockup name: ", name)
+	t.Log("mockup pass: ", pass)
+	appendUser(name, pass)
+}
 
 /* convert username + password to a sha256 hashed base64 encoded string*/
 
@@ -53,7 +60,7 @@ func TestLadeProfileNotExisting(t *testing.T) {
 
 func TestGebeProfilNotExisting(t *testing.T) {
 	t.Log("try to get a profile. ... (Expect nil return)")
-	name := "Max Mustermann"
+	name := "Nicht Max Mustermann"
 	t.Log("mockup name: ", name)
 	result := gebeProfil(name)
 	if result == nil {
@@ -64,15 +71,8 @@ func TestGebeProfilNotExisting(t *testing.T) {
 }
 
 func TestGebeProfilExisting(t *testing.T) {
-	t.Log("adding a loaded user to global variable.")
-	name := "Max Mustermann\n"
-	pass := "1234567890\n"
-	t.Log("mockup name: ", name)
-	t.Log("mockup pass: ", pass)
-	appendUser(name, pass)
-	fmt.Println(profile.Profile)
-
 	t.Log("try to get a profile. ... (Expect the profile returned)")
+	name := "Max Mustermann"
 	t.Log("tryout name: ", name)
 	result := gebeProfil(name)
 	if result == nil {
@@ -86,7 +86,7 @@ func TestGebeProfilExisting(t *testing.T) {
 
 func TestPruefeLoginNotExistingUser(t *testing.T) {
 	t.Log("try to login with a not existing user. ... (Expect login failure)")
-	name := "Max Mustermann"
+	name := "Nicht Max Mustermann"
 	pass := "1234567890"
 	t.Log("mockup name: ", name)
 	t.Log("mockup pass: ", pass)
@@ -100,18 +100,13 @@ func TestPruefeLoginNotExistingUser(t *testing.T) {
 
 /* checks if username and password are matching correctly. Using wrong password. Expecting failure. */
 func TestPruefeLoginWrongPassword(t *testing.T) {
-	t.Log("adding a loaded user to global variable.")
-	name := "Max Mustermann\n"
-	pass := "1234567890\n"
-	t.Log("mockup name: ", name)
-	t.Log("mockup pass: ", pass)
-	appendUser(name,pass)
 
 	t.Log("try to login with a wrong password. ... (Expect login failure)")
+	name := "Max Mustermann"
 	wrong_pass := "asdfqwerty"
 	t.Log("tryout name: ", name)
 	t.Log("tryout pass: ", wrong_pass)
-	result := pruefeLogin(name, SalzHash(name, pass))
+	result := pruefeLogin(name, wrong_pass)
 	if result == true {
 		t.Error("logged in with wrong user credentials!")
 	} else {
@@ -121,17 +116,13 @@ func TestPruefeLoginWrongPassword(t *testing.T) {
 
 /* checks if username and password are matching correctly. Expect success*/
 func TestPruefeLoginSuccessful(t *testing.T) {
-	t.Log("adding a loaded user to global variable.")
-	name := "Max Mustermann\n"
-	pass := "1234567890\n"
-	t.Log("mockup name: ", name)
-	t.Log("mockup pass: ", pass)
-	appendUser(name, pass)
 
 	t.Log("try to login with real credentials. ... (Expect login success)")
+	name := "Max Mustermann"
+	pass := "1234567890"
 	t.Log("tryout name: ", name)
 	t.Log("tryout pass: ", pass)
-	result := pruefeLogin(name, SalzHash(name, pass))
+	result := pruefeLogin(name, pass)
 	if result == false {
 		t.Error("Not logged in!")
 	} else {
@@ -187,25 +178,22 @@ func TestMachLoginEmptyData(t *testing.T) {
 	} else {
 		t.Errorf("unexpected response: (%v and %v) anstatt (false and false)", login, erfolg)
 	}
-	t.Log(login)
-	t.Log(erfolg)
 }
 
 func TestMachLoginRealData(t *testing.T) {
-	t.Log("adding a loaded user to global variable.")
-	name := "Max Mustermann\n"
-	pass := "1234567890\n"
-	t.Log("mockup name: ", name)
-	t.Log("mockup pass: ", pass)
-	appendUser(name, pass)
 
 	t.Log("Test with a Testlogin. ... (Expecting (true, true))")
 	t.Log("create a request")
-	r, err := http.NewRequest("post", "Login", strings.NewReader("{name: 'Max Mustermann', pass: 1234567890}"))
+	r, err := http.NewRequest("post", "/login", nil)
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded; params=value")
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(r)
+	q := r.URL.Query()
+	q.Add("name", "Max Mustermann")
+	q.Add("pass", "1234567890")
+	r.URL.RawQuery = q.Encode()
+	t.Log(r.FormValue("name"))
 
 	/*  ResponseRecorder instead of ResponseWriter to record the response. */
 	t.Log("create a ResponseRecorder and serve the Handler")
@@ -257,7 +245,33 @@ func TestKekse(t *testing.T) {
 
 /* startseite  http template method ->  no test */
 
-/* login  http template method ->  no test */
+/* login  http template method */
+func TestLogin(t *testing.T) {
+	t.Log("Test with a Testlogin. ... (Expecting Redirect)")
+	t.Log("create a request")
+	r, err := http.NewRequest("post", "/login", nil)
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded; params=value")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	q := r.URL.Query()
+	q.Add("name", "Max Mustermann")
+	q.Add("pass", "1234567890")
+	r.URL.RawQuery = q.Encode()
+
+	/*  ResponseRecorder instead of ResponseWriter to record the response. */
+	t.Log("create a ResponseRecorder and serve the Handler")
+	w := httptest.NewRecorder()
+	handler := http.HandlerFunc(login)
+	handler.ServeHTTP(w, r)
+
+	t.Log("Check the HTTP Staus Code. ... (Expecting 302)")
+	if status := w.Code; status != 302 {
+		t.Errorf("unexpected status code: %v instead of %v",
+			status, 302)
+	}
+}
 
 /* logout  http template method ->  no test */
 
