@@ -196,7 +196,7 @@ func kommentarKeks(w http.ResponseWriter, name string) {
 /*
 Erstellt einen Hash aus Name und Passwort des Users
 */
-func salzHash(name string, pass string) string {
+func SalzHash(name string, pass string) string {
 	h := sha512.New()
 	salz := name + pass
 	return base64.URLEncoding.EncodeToString(h.Sum([]byte(salz)))
@@ -237,7 +237,7 @@ func startseite(w http.ResponseWriter, r *http.Request) {
 Prüft, ob der eingegebene Login gültig ist
 */
 func pruefeLogin(name string, pass string) bool {
-	pass = salzHash(name, pass)
+	pass = SalzHash(name, pass)
 	for _, profil := range profile.Profile {
 		if profil.Name == name && profil.Passwort == pass {
 			return true
@@ -440,9 +440,9 @@ func passwort(w http.ResponseWriter, r *http.Request) {
 /*
 Lädt alle Profile aus der user.json
 */
-func ladeProfile() {
+func ladeProfile(pfad string) {
 	var p Nutzerdaten
-	dat, err := ioutil.ReadFile("user.json")
+	dat, err := ioutil.ReadFile(pfad)
 	if err != nil {
 		fmt.Println("Lesen der Nutzerdaten fehlgeschlagen oder noch keine Nutzer vorhanden", err)
 		fmt.Println("Erstelle neue Nutzer...")
@@ -451,6 +451,15 @@ func ladeProfile() {
 	}
 	err = json.Unmarshal(dat, &p)
 	profile = p
+}
+
+/*
+Fügt einen Nutzer zur Nutzerliste hinzu
+*/
+func appendUser(name string, pass string) {
+	profile.Profile = append(profile.Profile, Profil{Name: name[:len(name)-1], Passwort: SalzHash(name[:len(name)-1], pass[:len(pass)-1])})
+	fmt.Println("Nutzer "+name+" hinzugefügt")
+	fmt.Println(profile.Profile)
 }
 
 /*
@@ -467,7 +476,7 @@ func erstelleNutzer() {
 	}
 	fmt.Print("Passwort des neuen Benutzers eingeben: ")
 	pass, _ := input.ReadString('\n')
-	profile.Profile = append(profile.Profile, Profil{Name: name[:len(name)-1], Passwort: SalzHash(name[:len(name)-1], pass[:len(pass)-1])})
+	appendUser(name, pass)
 	b, err := json.Marshal(profile)
 	if err != nil {
 		fmt.Println(err)
@@ -596,7 +605,7 @@ func bestaetigen(w http.ResponseWriter, r *http.Request) {
 Startet das Programm, initialisiert die Variablen mit übergebenen Flags, parsed die Templates und startet den Webserver
 */
 func main() {
-	ladeProfile()
+	ladeProfile("user.json")
 	port := flag.Int("port", const_port, "Port für den Webserver")
 	host := flag.String("host", const_host, "Host für den Webserver")
 	flag.IntVar(&timeout, "timeout", const_timeout, "Timeout von Sitzungen in Minuten")
@@ -606,13 +615,13 @@ func main() {
 	if neuerNutzer {
 		erstelleNutzer()
 	}
-	templateProfil = template.Must(template.ParseFiles("profil.html"))
-	templateSeite = template.Must(template.ParseFiles("template.html"))
-	templateNeu = template.Must(template.ParseFiles("neu.html"))
-	templateLoeschen = template.Must(template.ParseFiles("loeschen.html"))
-	templateLogin = template.Must(template.ParseFiles("login.html"))
-	templateIndex = template.Must(template.ParseFiles("index.html"))
-	http.Handle("/css/", http.StripPrefix("/css", http.FileServer(http.Dir("css"))))
+	templateProfil = template.Must(template.ParseFiles("res/profil.html"))
+	templateSeite = template.Must(template.ParseFiles("res/template.html"))
+	templateNeu = template.Must(template.ParseFiles("res/neu.html"))
+	templateLoeschen = template.Must(template.ParseFiles("res/loeschen.html"))
+	templateLogin = template.Must(template.ParseFiles("res/login.html"))
+	templateIndex = template.Must(template.ParseFiles("res/index.html"))
+	http.Handle("/css/", http.StripPrefix("/css", http.FileServer(http.Dir("res/css"))))
 	http.HandleFunc("/", startseite)
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/passwort", passwort)

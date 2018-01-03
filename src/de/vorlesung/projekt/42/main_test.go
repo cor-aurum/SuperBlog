@@ -16,7 +16,7 @@ import (
 	"testing"
 )
 
-/* convert username + passwod to a sha256 hashed base64 encoded string*/
+/* convert username + password to a sha256 hashed base64 encoded string*/
 
 func TestSalzHash(t *testing.T) {
 	t.Log("check if the generated salted Hash is correct. ... (Expect it matches)")
@@ -46,8 +46,7 @@ func TestLadeProfileNotExisting(t *testing.T) {
 			t.Log("ladeProfile failed as expected")
 		}
 	}()
-	ladeProfile()
-
+	ladeProfile("notuser.json")
 }
 
 /* searches for an profile by name. Will fail because of no profiles loaded. */
@@ -66,14 +65,14 @@ func TestGebeProfilNotExisting(t *testing.T) {
 
 func TestGebeProfilExisting(t *testing.T) {
 	t.Log("adding a loaded user to global variable.")
-	name := "Max Mustermann"
-	pass := "1234567890"
+	name := "Max Mustermann\n"
+	pass := "1234567890\n"
 	t.Log("mockup name: ", name)
 	t.Log("mockup pass: ", pass)
-	profile.Profile = append(profile.Profile, Profil{Name: name[:len(name)-1], Passwort: SalzHash(name[:len(name)-1], pass[:len(pass)-1])})
+	appendUser(name, pass)
 	fmt.Println(profile.Profile)
 
-	t.Log("try to get a profile. ... (Expect the profle returned)")
+	t.Log("try to get a profile. ... (Expect the profile returned)")
 	t.Log("tryout name: ", name)
 	result := gebeProfil(name)
 	if result == nil {
@@ -102,11 +101,11 @@ func TestPruefeLoginNotExistingUser(t *testing.T) {
 /* checks if username and password are matching correctly. Using wrong password. Expecting failure. */
 func TestPruefeLoginWrongPassword(t *testing.T) {
 	t.Log("adding a loaded user to global variable.")
-	name := "Max Mustermann"
-	pass := "1234567890"
+	name := "Max Mustermann\n"
+	pass := "1234567890\n"
 	t.Log("mockup name: ", name)
 	t.Log("mockup pass: ", pass)
-	profile.Profile = append(profile.Profile, Profil{Name: name[:len(name)-1], Passwort: SalzHash(name[:len(name)-1], pass[:len(pass)-1])})
+	appendUser(name,pass)
 
 	t.Log("try to login with a wrong password. ... (Expect login failure)")
 	wrong_pass := "asdfqwerty"
@@ -123,11 +122,11 @@ func TestPruefeLoginWrongPassword(t *testing.T) {
 /* checks if username and password are matching correctly. Expect success*/
 func TestPruefeLoginSuccessful(t *testing.T) {
 	t.Log("adding a loaded user to global variable.")
-	name := "Max Mustermann"
-	pass := "1234567890"
+	name := "Max Mustermann\n"
+	pass := "1234567890\n"
 	t.Log("mockup name: ", name)
 	t.Log("mockup pass: ", pass)
-	profile.Profile = append(profile.Profile, Profil{Name: name[:len(name)-1], Passwort: SalzHash(name[:len(name)-1], pass[:len(pass)-1])})
+	appendUser(name, pass)
 
 	t.Log("try to login with real credentials. ... (Expect login success)")
 	t.Log("tryout name: ", name)
@@ -194,11 +193,11 @@ func TestMachLoginEmptyData(t *testing.T) {
 
 func TestMachLoginRealData(t *testing.T) {
 	t.Log("adding a loaded user to global variable.")
-	name := "Max Mustermann"
-	pass := "1234567890"
+	name := "Max Mustermann\n"
+	pass := "1234567890\n"
 	t.Log("mockup name: ", name)
 	t.Log("mockup pass: ", pass)
-	profile.Profile = append(profile.Profile, Profil{Name: name[:len(name)-1], Passwort: SalzHash(name[:len(name)-1], pass[:len(pass)-1])})
+	appendUser(name, pass)
 
 	t.Log("Test with a Testlogin. ... (Expecting (true, true))")
 	t.Log("create a request")
