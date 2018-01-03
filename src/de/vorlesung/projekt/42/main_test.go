@@ -9,9 +9,13 @@ ung zur Nutzung von übergebenen Providern kam dafür zu spät.
 */
 
 import (
+	"html/template"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
+	"time"
 )
 
 func TestCreateTestUser(t *testing.T) {
@@ -21,6 +25,38 @@ func TestCreateTestUser(t *testing.T) {
 	t.Log("mockup name: ", name)
 	t.Log("mockup pass: ", pass)
 	appendUser(name, pass)
+}
+
+/* erstelleVerzeichnis File Sytem function. */
+func TestErstelleVerzeichnisSeite(t *testing.T) {
+	t.Log("Create a Folder. ... (Expecting the Folder is existing afterwards)")
+	erstelleVerzeichnis("./seite")
+	if _, err := os.Stat("./seite"); err != nil {
+		if os.IsNotExist(err) {
+			t.Error("File has not been created")
+		} else {
+			t.Log("File exists as expected")
+		}
+	}
+}
+
+func TestErstelleVerzeichnisExampleFolder(t *testing.T) {
+	defer func() {
+		var err = os.Remove("examplefolder")
+		if err != nil {
+			return
+		}
+		t.Log("==> done deleting file")
+	}()
+	t.Log("Create a Folder. ... (Expecting the Folder is existing afterwards)")
+	erstelleVerzeichnis("examplefolder")
+	if _, err := os.Stat("examplefolder"); err != nil {
+		if os.IsNotExist(err) {
+			t.Error("File has not been created")
+		} else {
+			t.Log("File exists as expected")
+		}
+	}
 }
 
 /* convert username + password to a sha256 hashed base64 encoded string*/
@@ -54,6 +90,39 @@ func TestLadeProfileNotExisting(t *testing.T) {
 		}
 	}()
 	ladeProfile("notuser.json")
+}
+
+func TestLadeProfile(t *testing.T) {
+	if _, err := os.Stat("user.json"); err != nil {
+		if os.IsNotExist(err) {
+			LadeProfileNotCreated(t)
+		} else {
+			LadeProfileAlreadyCreated(t)
+		}
+	}
+}
+
+func LadeProfileNotCreated(t *testing.T) {
+	t.Log("test loading of not existing user.json file. ... (Expect code panic)")
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("The code did not panic")
+		} else {
+			t.Log("ladeProfile failed as expected")
+		}
+	}()
+	ladeProfile("notuser.json")
+}
+func LadeProfileAlreadyCreated(t *testing.T) {
+	t.Log("test loading of existing user.json file. ... (do not Expect code panic)")
+	defer func() {
+		if r := recover(); r != nil {
+			t.Error("The code did panic")
+		} else {
+			t.Log("The file got loaded")
+		}
+	}()
+	ladeProfile("user.json")
 }
 
 /* searches for an profile by name. Will fail because of no profiles loaded. */
@@ -103,10 +172,10 @@ func TestPruefeLoginWrongPassword(t *testing.T) {
 
 	t.Log("try to login with a wrong password. ... (Expect login failure)")
 	name := "Max Mustermann"
-	wrong_pass := "asdfqwerty"
+	wrongpass := "asdfqwerty"
 	t.Log("tryout name: ", name)
-	t.Log("tryout pass: ", wrong_pass)
-	result := pruefeLogin(name, wrong_pass)
+	t.Log("tryout pass: ", wrongpass)
+	result := pruefeLogin(name, wrongpass)
 	if result == true {
 		t.Error("logged in with wrong user credentials!")
 	} else {
@@ -145,6 +214,21 @@ func TestGebeUUID(t *testing.T) {
 	}
 }
 
+func TestGebeUUIDFail(t *testing.T) {
+	t.Log("test if negative length is allowed. ... (expecting it is not)")
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("negative length is allowed")
+		} else {
+			t.Log("negative length is not allowed")
+		}
+	}()
+	laenge := -128
+	t.Log("length: ", laenge)
+	gebeUUID(laenge)
+
+}
+
 /* checks if given values are not empty. uses pruefeLogin. appends new session to sesionslist. Will fail because of empty user.json*/
 
 func TestMachLoginEmptyData(t *testing.T) {
@@ -167,7 +251,7 @@ func TestMachLoginEmptyData(t *testing.T) {
 	})
 	handler.ServeHTTP(w, r)
 
-	t.Log("Check the HTTP Staus Code. ... (Expecting OK)")
+	t.Log("Check the HTTP StatusCode. ... (Expecting OK)")
 	if status := w.Code; status != http.StatusOK {
 		t.Errorf("unexpected status code: %v instead of %v",
 			status, http.StatusOK)
@@ -206,7 +290,7 @@ func TestMachLoginRealData(t *testing.T) {
 	})
 	handler.ServeHTTP(w, r)
 
-	t.Log("Check the HTTP Staus Code. ... (Expecting OK)")
+	t.Log("Check the HTTP StatusCode. ... (Expecting OK)")
 	if status := w.Code; status != http.StatusOK {
 		t.Errorf("unexpected status code: %v instead of %v",
 			status, http.StatusOK)
@@ -219,17 +303,74 @@ func TestMachLoginRealData(t *testing.T) {
 	}
 }
 
+func TestMachLoginWrongData(t *testing.T) {
+	t.Log("Test with a wrong Testlogin. ... (Expecting (true, false))")
+	t.Log("create a request")
+	r, err := http.NewRequest("post", "/login", nil)
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded; params=value")
+	if err != nil {
+		t.Fatal(err)
+	}
+	q := r.URL.Query()
+	q.Add("name", "Max Mustermann")
+	q.Add("pass", "false")
+	r.URL.RawQuery = q.Encode()
+	t.Log(r.FormValue("name"))
+
+	/*  ResponseRecorder instead of ResponseWriter to record the response. */
+	t.Log("create a ResponseRecorder and serve the Handler")
+	w := httptest.NewRecorder()
+	var login bool
+	var erfolg bool
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		login, erfolg = machLogin(w, r)
+		w.Header().Set("Content-Type", "application/json")
+	})
+	handler.ServeHTTP(w, r)
+
+	t.Log("Check the HTTP StatusCode. ... (Expecting OK)")
+	if status := w.Code; status != http.StatusOK {
+		t.Errorf("unexpected status code: %v instead of %v",
+			status, http.StatusOK)
+	}
+	// Check the returned values
+	if login == true && erfolg == false {
+		t.Logf("Login like Expected: (%v and %v)", login, erfolg)
+	} else {
+		t.Errorf("unexpected response: (%v and %v) anstatt (true and true)", login, erfolg)
+	}
+}
+
 /* returns a session with an specific id. Will fail because no sessions are running*/
 
 func TestGebeSitzung(t *testing.T) {
+	t.Log("reading Session variable. ... (Expecting (false, \"\"))")
+	t.Log("create a request")
+	r, err := http.NewRequest("get", "", nil)
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded; params=value")
+	if err != nil {
+		t.Fatal(err)
+	}
 
+	/*  ResponseRecorder instead of ResponseWriter to record the response. */
+	t.Log("create a ResponseRecorder and serve the Handler")
+	w := httptest.NewRecorder()
+	var sessionExists bool
+	var name string
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		sessionExists, name = gebeSitzung(r)
+		w.Header().Set("Content-Type", "application/json")
+	})
+	handler.ServeHTTP(w, r)
+
+	if sessionExists == false && len(name) <= 0 {
+		t.Log("no session running as expected")
+	} else {
+		t.Errorf("there is a Session running! : %v, %v ", sessionExists, name)
+	}
 }
 
-/* deletes a session with an specifiic id. Will fail because no sessions are running*/
-
-func TestLoescheSitzung(t *testing.T) {
-
-}
+/* loescheSitzung deletes a session with an specifiic id. Void Method no test*/
 
 /* creates an array of the menu items */
 func TestMachMenu(t *testing.T) {
@@ -244,6 +385,29 @@ func TestKekse(t *testing.T) {
 /* kommentarKeks void method. no test */
 
 /* startseite  http template method ->  no test */
+
+func TestStartseiteWithoutData(t *testing.T) {
+	t.Log("Test with empty credentials. ... (Expecting no redirect)")
+	templateIndex = template.Must(template.ParseFiles("res/index.html"))
+	t.Log("create a request")
+	r, err := http.NewRequest("post", "/login", nil)
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded; params=value")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	/*  ResponseRecorder instead of ResponseWriter to record the response. */
+	t.Log("create a ResponseRecorder and serve the Handler")
+	w := httptest.NewRecorder()
+	handler := http.HandlerFunc(startseite)
+	handler.ServeHTTP(w, r)
+
+	t.Log("Check the HTTP StatusCode. ... (Expecting no redirect)")
+	if status := w.Code; status == 302 {
+		t.Errorf("unexpected status code: %v instead of 200",
+			status)
+	}
+}
 
 /* login  http template method */
 func TestLogin(t *testing.T) {
@@ -266,36 +430,282 @@ func TestLogin(t *testing.T) {
 	handler := http.HandlerFunc(login)
 	handler.ServeHTTP(w, r)
 
-	t.Log("Check the HTTP Staus Code. ... (Expecting 302)")
+	t.Log("Check the HTTP StatusCode. ... (Expecting 302)")
 	if status := w.Code; status != 302 {
 		t.Errorf("unexpected status code: %v instead of %v",
 			status, 302)
 	}
 }
 
+func TestLoginEmptyCredentials(t *testing.T) {
+	t.Log("Test with empty credentials. ... (Expecting no redirect)")
+	templateLogin = template.Must(template.ParseFiles("res/login.html"))
+	t.Log("create a request")
+	r, err := http.NewRequest("post", "/login", nil)
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded; params=value")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	q := r.URL.Query()
+	q.Add("name", "")
+	q.Add("pass", "")
+	r.URL.RawQuery = q.Encode()
+
+	/*  ResponseRecorder instead of ResponseWriter to record the response. */
+	t.Log("create a ResponseRecorder and serve the Handler")
+	w := httptest.NewRecorder()
+	handler := http.HandlerFunc(login)
+	handler.ServeHTTP(w, r)
+
+	t.Log("Check the HTTP StatusCode. ... (Expecting no redirect)")
+	if status := w.Code; status == 302 {
+		t.Errorf("unexpected status code: %v instead of 200",
+			status)
+	}
+}
+
+func TestLoginWrongData(t *testing.T) {
+	t.Log("Test with a Wrong Testlogin. ... (Expecting no redirect)")
+	templateLogin = template.Must(template.ParseFiles("res/login.html"))
+	t.Log("create a request")
+	r, err := http.NewRequest("post", "/login", nil)
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded; params=value")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	q := r.URL.Query()
+	q.Add("name", "Max Mustermann")
+	q.Add("pass", "wrong")
+	r.URL.RawQuery = q.Encode()
+
+	/*  ResponseRecorder instead of ResponseWriter to record the response. */
+	t.Log("create a ResponseRecorder and serve the Handler")
+	w := httptest.NewRecorder()
+	handler := http.HandlerFunc(login)
+	handler.ServeHTTP(w, r)
+
+	t.Log("Check the HTTP StatusCode. ... (Expecting o redirect)")
+	if status := w.Code; status == 302 {
+		t.Errorf("unexpected status code: %v instead of 200",
+			status)
+	}
+}
+
 /* logout  http template method ->  no test */
+
+func TestLogout(t *testing.T) {
+	t.Log("Test logout. ... (Expecting Redirect)")
+	t.Log("create a request")
+	r, err := http.NewRequest("post", "/logout", nil)
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded; params=value")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	/*  ResponseRecorder instead of ResponseWriter to record the response. */
+	t.Log("create a ResponseRecorder and serve the Handler")
+	w := httptest.NewRecorder()
+	handler := http.HandlerFunc(logout)
+	handler.ServeHTTP(w, r)
+
+	t.Log("Check the HTTP StatusCode. ... (Expecting 302)")
+	if status := w.Code; status != 302 {
+		t.Errorf("unexpected status code: %v instead of %v",
+			status, 302)
+	}
+}
 
 /* test if comment is a duplicate. Will fail because of no comments*/
 
 func TestEnthaeltNoComments(t *testing.T) {
-
-}
-
-/* writes a comment to the file system. Even possible without a user*/
-
-func TestErstelleKommentar(t *testing.T) {
-
+	var commentsList []Kommentar
+	newComment := Kommentar{Autor: "AUTHOR NAME", Inhalt: "INHALT", Datum: time.Now()}
+	result := enthaelt(commentsList, newComment)
+	if result == false {
+		t.Log("no match found as expected")
+	} else {
+		t.Error("Match Found!")
+	}
 }
 
 /* test if comment is a duplicate. */
 
 func TestEnthaeltduplicateComments(t *testing.T) {
+	var commentsList []Kommentar
+	k1 := Kommentar{Autor: "AUTHOR NAME", Inhalt: "INHALT X", Datum: time.Now()}
+	k2 := Kommentar{Autor: "AUTHOR NAME", Inhalt: "INHALT Y", Datum: time.Now()}
+	k3 := Kommentar{Autor: "AUTHOR NAME", Inhalt: "INHALT Z", Datum: time.Now()}
+	commentsList = append([]Kommentar{k1}, commentsList...)
+	commentsList = append([]Kommentar{k2}, commentsList...)
+	commentsList = append([]Kommentar{k3}, commentsList...)
 
+	newComment := Kommentar{Autor: "AUTHOR NAME", Inhalt: "INHALT X", Datum: time.Now()}
+	result := enthaelt(commentsList, newComment)
+	if result != false {
+		t.Log("Match found as expected")
+	} else {
+		t.Error("No Match Found!")
+	}
+}
+
+/* writes a comment to the file system.*/
+func TestErstelleKommentarFailure(t *testing.T) {
+	t.Log("Test creation of a comment. ... (Expecting it gets not created)")
+	t.Log("create a request")
+	r, err := http.NewRequest("post", "hjkl.json", nil)
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded; params=value")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	q := r.URL.Query()
+	q.Add("autor", "Max Mustermann")
+	q.Add("inhalt", "Einfach ein bisschen Inhalt")
+	r.URL.RawQuery = q.Encode()
+
+	/*  ResponseRecorder instead of ResponseWriter to record the response. */
+	t.Log("create a ResponseRecorder and serve the Handler")
+	w := httptest.NewRecorder()
+	handler := http.HandlerFunc(erstelleKommentar)
+	handler.ServeHTTP(w, r)
+
+	t.Log("Check the HTTP Status Code. ... (Expecting status OK)")
+	if status := w.Code; status != http.StatusOK {
+		t.Errorf("unexpected status code: %v instead of %v",
+			status, http.StatusOK)
+	}
+}
+
+func TestErstelleKommentar(t *testing.T) {
+	defer func() {
+		var err = os.Remove("test.json")
+		if err != nil {
+			return
+		}
+		t.Log("==> done deleting file")
+	}()
+	t.Log("Test creation of a comment. ... (Expecting it gets created)")
+	b := []byte(`{
+	"Menu": null,
+	"Dateiname": "",
+	"Titel": "Testseite",
+	"Inhalt": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+	"Datum": "2017-10-31T21:51:53.15612987+01:00",
+	"Autor": "Nils Holgerson",
+	"Kommentare": [
+		{
+			"Autor": "Hallo Welt",
+			"Datum": "2017-10-31T22:50:32.283095133+01:00",
+			"Inhalt": "Programming is fun"
+		}
+	]
+}`)
+	ioutil.WriteFile("test.json", b, 0644)
+	t.Log("create a request")
+	r, err := http.NewRequest("post", "/test", nil)
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded; params=value")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	q := r.URL.Query()
+	q.Add("autor", "Max Mustermann")
+	q.Add("inhalt", "Einfach ein bisschen Inhalt")
+	r.URL.RawQuery = q.Encode()
+
+	/*  ResponseRecorder instead of ResponseWriter to record the response. */
+	t.Log("create a ResponseRecorder and serve the Handler")
+	w := httptest.NewRecorder()
+	handler := http.HandlerFunc(erstelleKommentar)
+	handler.ServeHTTP(w, r)
+
+	t.Log("Check the HTTP Status Code. ... (Expecting status OK)")
+	if status := w.Code; status != http.StatusOK {
+		t.Errorf("unexpected status code: %v instead of %v",
+			status, http.StatusOK)
+	}
+}
+
+func TestErstelleKommentarDuplicate(t *testing.T) {
+	defer func() {
+		var err = os.Remove("test.json")
+		if err != nil {
+			return
+		}
+		t.Log("==> done deleting file")
+	}()
+	t.Log("Test creation of a comment. ... (Expecting it gets created)")
+	b := []byte(`{
+	"Menu": null,
+	"Dateiname": "",
+	"Titel": "Testseite",
+	"Inhalt": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
+	"Datum": "2017-10-31T21:51:53.15612987+01:00",
+	"Autor": "Nils Holgerson",
+	"Kommentare": [
+		{
+			"Autor": "Hallo Welt",
+			"Datum": "2017-10-31T22:50:32.283095133+01:00",
+			"Inhalt": "Programming is fun"
+		}
+	]
+}`)
+	ioutil.WriteFile("test.json", b, 0644)
+	t.Log("create a request")
+	r, err := http.NewRequest("post", "/test", nil)
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded; params=value")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	q := r.URL.Query()
+	q.Add("autor", "Hallo Welt")
+	q.Add("inhalt", "Programming is fun")
+	r.URL.RawQuery = q.Encode()
+
+	/*  ResponseRecorder instead of ResponseWriter to record the response. */
+	t.Log("create a ResponseRecorder and serve the Handler")
+	w := httptest.NewRecorder()
+	handler := http.HandlerFunc(erstelleKommentar)
+	handler.ServeHTTP(w, r)
+
+	t.Log("Check the HTTP Status Code. ... (Expecting status OK)")
+	if status := w.Code; status != http.StatusOK {
+		t.Errorf("unexpected status code: %v instead of %v",
+			status, http.StatusOK)
+	}
+}
+
+func TestErstelleKommentarEmptyData(t *testing.T) {
+	t.Log("Test creation of a comment. ... (Expecting it gets created)")
+	t.Log("create a request")
+	r, err := http.NewRequest("post", "/kommentar", nil)
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded; params=value")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	q := r.URL.Query()
+	q.Add("autor", "")
+	q.Add("inhalt", "")
+	r.URL.RawQuery = q.Encode()
+
+	/*  ResponseRecorder instead of ResponseWriter to record the response. */
+	t.Log("create a ResponseRecorder and serve the Handler")
+	w := httptest.NewRecorder()
+	handler := http.HandlerFunc(erstelleKommentar)
+	handler.ServeHTTP(w, r)
+
+	t.Log("Check the HTTP Status Code. ... (Expecting status OK)")
+	if status := w.Code; status != http.StatusOK {
+		t.Errorf("unexpected status code: %v instead of 200",
+			status)
+	}
 }
 
 /* erstelleNutzer is a command line function. Not tested, because of missing input :( */
-
-/* erstelleVerzeichnis File Sytem function. Not tested */
 
 /*neu Create a new page. Not possible without user created on cli.*/
 
