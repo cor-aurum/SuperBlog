@@ -113,7 +113,6 @@ var templateIndex *template.Template
 Funktionen
 */
 
-
 /*
 Gibt an, ob eine Sitzung vorhanden ist
 Falls Ja: Gibt Name des eingeloggten Users als zweiten Rückgabewert zurück
@@ -431,7 +430,7 @@ func passwort(w http.ResponseWriter, r *http.Request) {
 		} else {
 			p.Meldung = "Das Passwort ist falsch"
 		}
-		t, _ := template.ParseFiles("profil.html")
+		t, _ := template.ParseFiles("res/profil.html")
 		p.Menu = machMenu(p.Menu, r, 0)
 		t.Execute(w, p)
 	}
