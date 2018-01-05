@@ -458,8 +458,6 @@ Fügt einen Nutzer zur Nutzerliste hinzu
 */
 func appendUser(name string, pass string) {
 	profile.Profile = append(profile.Profile, Profil{Name: name[:len(name)-1], Passwort: SalzHash(name[:len(name)-1], pass[:len(pass)-1])})
-	fmt.Println("Nutzer "+name+" hinzugefügt")
-	fmt.Println(profile.Profile)
 }
 
 /*
